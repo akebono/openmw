@@ -86,7 +86,7 @@ namespace MWGui
     MainMenu *menu;
     StatsWindow *stats;
     MessageBoxManager *mMessageBoxManager;
-#if 0
+#if 1
     InventoryWindow *inventory;
 #endif
     Console *console;

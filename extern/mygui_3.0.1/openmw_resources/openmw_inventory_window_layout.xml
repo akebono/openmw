@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <MyGUI type="Layout">
-    <Widget type="Window" skin="MW_Window" layer="Windows" position="0 0 600 300" name="_Main">
+    <Widget type="Window" skin="MW_Window" layer="Windows" position="0 0 600 240" name="_Main">
 
         <!-- Player enumbrance -->
         <Widget type="Progress" skin="MW_Progress_Blue" position="8 8 212 18" name="EncumbranceBar">
@@ -9,12 +9,14 @@
         </Widget>
 
         <!-- Avatar -->
-        <Widget type="Widget" skin="MW_Box" position="8 32 212 166" name="Avatar">
-            <Widget type="StaticText" skin="ProgressText" position="0 -8 212 18" align="HCenter Bottom" name="ArmorRating"/>
+        <Widget type="Widget" skin="MW_Box" position="8 32 212 166" align="ALIGN_VSTRETCH ALIGN_LEFT" name="Avatar">
+            <Widget type="StaticText" skin="ProgressText" position="0 -8 212 18" align="HCenter Bottom ALIGN_STRETCH" name="ArmorRating"/>
         </Widget>
 
         <!-- Items in inventory -->
-        <Widget type="Widget" skin="MW_Box" position="228 32 300 166" name="Items"/>
+        <Widget type="Widget" skin="MW_Box" position="228 32 352 166" align="ALIGN_STRETCH" name="Items">
+            <Widget type="HScroll" skin="MW_HScroll" position="4 148 344 14" align="ALIGN_BOTTOM ALIGN_HSTRETCH" name="InventoryScroller"/>
+        </Widget>
 
         <!-- Categories -->
         <Widget type="Widget" position="228 8 300 18" align="ALIGN_TOP ALIGN_LEFT" name="Categories">

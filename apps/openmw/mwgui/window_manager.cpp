@@ -9,6 +9,7 @@
 #include "dialogue_history.hpp"
 #include "stats_window.hpp"
 #include "messagebox.hpp"
+#include "inventory_window.hpp"
 
 #include "../mwmechanics/mechanicsmanager.hpp"
 #include "../mwinput/inputmanager.hpp"
@@ -57,8 +58,10 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
     menu = new MainMenu(w,h);
     map = new MapWindow();
     stats = new StatsWindow(*this);
-#if 0
+#if 1
     inventory = new InventoryWindow ();
+    inventory->setVisible(false);
+    inventory->addItem("icons\\c\\tx_shirtcomm_03.dds");
 #endif
     console = new Console(w,h, environment, extensions);
     mMessageBoxManager = new MessageBoxManager(this);
@@ -89,7 +92,7 @@ WindowManager::~WindowManager()
     delete map;
     delete menu;
     delete stats;
-#if 0
+#if 1
     delete inventory;
 #endif
 
@@ -152,7 +155,7 @@ void WindowManager::updateVisible()
     map->setVisible(false);
     menu->setVisible(false);
     stats->setVisible(false);
-#if 0
+#if 1
     inventory->setVisible(false);
 #endif
     console->disable();
@@ -313,8 +316,8 @@ void WindowManager::updateVisible()
         // Show the windows we want
         map   -> setVisible( (eff & GW_Map) != 0 );
         stats -> setVisible( (eff & GW_Stats) != 0 );
-#if 0
-        //      inventory -> setVisible( eff & GW_Inventory );
+#if 1
+        inventory -> setVisible( eff & GW_Inventory );
 #endif
         return;
     }
