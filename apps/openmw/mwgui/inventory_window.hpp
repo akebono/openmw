@@ -11,8 +11,6 @@
 /* \brief invetory window in inventory mode
 */
 
-#define ICON_SIZE 40
-#define ICON_SPACING 8
 namespace MWGui
 {
   class InventoryWindow : public OEngine::GUI::Layout
@@ -26,13 +24,30 @@ namespace MWGui
         CM_Magic = 3,    // Magic
         CM_Misc = 4      // Misc
       };
-
+    enum BodyPart
+      {
+        BP_HEAD = 0,
+        BP_SHOULDERS = 1,
+        BP_WRIST_LEFT = 2,
+        BP_WRIST_RIGHT = 3,
+        BP_CUIRASS = 4,
+        BP_GREAVES = 5,
+        BP_BOOTS = 6,
+        //clothing
+        BP_SHIRT = 7,
+        BP_PANTS = 8,
+        BP_AMULET = 9,
+        BP_BELT = 10,
+        BP_RING_LEFT = 11,
+        BP_RING_RIGHT = 12,
+      };
     InventoryWindow ();
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
-    //FIXME: somehow should be called from somewhere
+    //FIXME: for scripts
     void addItem(MWWorld::Ptr& ptr);
+
 
 
     CategoryMode categoryMode;        // Current category filter
@@ -43,17 +58,16 @@ namespace MWGui
     MyGUI::Colour inactiveColor;
 
   private:
-    void onScrollChangePosition(MyGUI::VScrollPtr scroller, size_t pos);
-    void onPick(MyGUI::WidgetPtr _sender);
-    void onEquip(MyGUI::Widget* _sender);
+    void onScrollChangePosition(MyGUI::VScrollPtr, size_t);
+    void onInventoryClick(MyGUI::WidgetPtr);
+    void onAvatarClick(MyGUI::WidgetPtr);
+    void onResize(MyGUI::Window* _sender);
     void refreshView(int);
 
     std::vector<MWWorld::Ptr> mItems;
-    MyGUI::WidgetPtr inventory;
-    MyGUI::WidgetPtr items;
-    MyGUI::HScrollPtr scroll;
+//    MWWorld::Ptr player;
 
-    std::map<MWWorld::Ptr, MyGUI::StaticImagePtr> mWItems;
+    std::multimap<MyGUI::WidgetPtr, MWWorld::Ptr> mWItems;
 
     bool mDrag;
     MWWorld::Ptr mDragingItem;
@@ -63,7 +77,11 @@ namespace MWGui
     int lastPos;
 
     MyGUI::WidgetPtr mAvatarWidget;
-
+    MyGUI::WidgetPtr items;
+    MyGUI::HScrollPtr scroll;
+    const int iIconSize;
+    const int iSpacingSize;
+    const float avatarAspect;
     //FIXME:TEST
   public:
     void addItem(std::string);
@@ -71,7 +89,7 @@ namespace MWGui
 
     std::vector<std::string> mItemsTEST;
     std::string mDragingItemTest;
-    std::multimap<std::string, MyGUI::StaticImagePtr> mWItemsTEST;
+    std::multimap<MyGUI::WidgetPtr, std::string> mWItemsTEST;
     std::map<int,std::string> mEquippedTEST;
   };
 }

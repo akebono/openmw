@@ -1,6 +1,7 @@
 
 #include "inventory_window.hpp"
-
+#include "../mwworld/class.hpp"
+#include "../mwworld/environment.hpp"
 namespace MWGui{
   InventoryWindow::InventoryWindow ()
     : Layout("openmw_inventory_window_layout.xml")
@@ -10,13 +11,22 @@ namespace MWGui{
     , activeColor(0, 0, 1)
     , inactiveColor(0.7, 0.7, 0.7)
     , mDrag(false)
+    , iIconSize(40)
+    , iSpacingSize(8)
+    , avatarAspect(2.217)
   {
-    setCoord(0, 400, 500, 300);
 
+//    player = environment.mWorld->getPtr ("player", true)
+
+    setCoord(0, 400, 500, 300);
     // These are just demo values, you should replace these with
     // real calls from outside the class later.
 
     mMainWidget->setCaption("Glass Frostsword");
+    MyGUI::Window* window = mMainWidget->castType<MyGUI::Window>(false);
+    window->eventWindowChangeCoord=MyGUI::newDelegate(this,&InventoryWindow::onResize);
+    window->setMinSize(200,64);
+
     setText("EncumbranceBarT", "176/210");
 
     MyGUI::ProgressPtr pt;
@@ -28,7 +38,7 @@ namespace MWGui{
     scroll->setVisible(true);
     scroll->setTrackSize(16);
     scroll->setScrollRange(1);
-    scroll->setScrollPage(ICON_SIZE+ICON_SPACING);
+    scroll->setScrollPage(iIconSize+iSpacingSize);
 
 
     scroll->eventScrollChangePosition = MyGUI::newDelegate(this,&InventoryWindow::onScrollChangePosition);
@@ -37,13 +47,14 @@ namespace MWGui{
 
     getWidget(mAvatarWidget, "Avatar");
     
-    mAvatarWidget->eventMouseButtonClick=MyGUI::newDelegate(this, &InventoryWindow::onEquip);
+    mAvatarWidget->eventMouseButtonClick=MyGUI::newDelegate(this, &InventoryWindow::onAvatarClick);
 
     // Adjust armor rating text to bottom of avatar widget
     MyGUI::StaticTextPtr armor_rating;
     getWidget(armor_rating, "ArmorRating");
     armor_rating->setCaption("Armor: 11");
     MyGUI::IntCoord coord = armor_rating->getCoord();
+
     coord.top =mAvatarWidget->getCoord().height - 4 - coord.height;
     armor_rating->setCoord(coord);
 
@@ -124,41 +135,88 @@ namespace MWGui{
     MyGUI::StaticImagePtr Item;
 
     switch(i){
-    case 0: //category change/new item. mindless smashing and recreating of all widgets
+      case 0: //category change/new item. mindless smashing and recreating of all widgets
+/*
         for(std::map<MWWorld::Ptr, MyGUI::StaticImagePtr>::iterator it= mWItems.begin();it!= mWItems.end();it++){
             MyGUI::Gui::getInstance().destroyWidget(it->second);
         }
+
         mWItems.clear();
         x=4;
         y=4;
-        for(std::vector<MWWorld::Ptr>::iterator it=mItems.begin();it!=mItems.end();it++){
-            printf("typename:%s\n",it->getTypeName().c_str());
+        for(
+            std::list<LiveRef>::iterator it=MWWorld::Class::get (player).getContainerStore (player).list.begin();
+            it!=MWWorld::Class::get (player).getContainerStore (player).list.end();
+            it++){
+
             if(categoryMode==CM_Misc && ! it->getTypeName().substr(8,13).compare("Miscellaneous")){
-                Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, ICON_SIZE, ICON_SIZE, MyGUI::Align::Default );
-                Item->setImageTexture("icons\\c\\tx_shirtcomm_03.dds");
+                Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
+                Item->setImageTexture(MWWorld::Class::get (ptr).getInventoryIcon (ptr));
                 Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onPick);
                 mWItems.insert(std::make_pair(*it,Item));
 
-                if(y+ICON_SIZE+ICON_SPACING+ICON_SIZE+16 > items->getClientCoord().bottom()){
+                if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
                     y=4;
-                    x+=ICON_SIZE+ICON_SPACING;
+                    x+=iIconSize+iSpacingSize;
 
                 }else{
-                    y+=ICON_SIZE+ICON_SPACING;
-                    if(x+ICON_SIZE+ICON_SPACING>items->getClientCoord().right()){
-                        scroll->setScrollRange(x+ICON_SIZE+ICON_SPACING+lastPos-items->getClientCoord().right());
+                    y+=iIconSize+iSpacingSize;
+                    if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                        scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
                         scroll->setScrollViewPage(scroll->getScrollRange());
                     }
                 }
-
             }
         }
-    break;
-    case 1: //resize
-    break;
-    case 2: //FIXME: test. BUG PERSIST 
-        for(std::multimap<std::string, MyGUI::StaticImagePtr>::iterator it= mWItemsTEST.begin();it!= mWItemsTEST.end();it++){
-            MyGUI::Gui::getInstance().destroyWidget(it->second);
+*/
+      break;
+      case 1: //resize
+/*
+        x=4-lastPos;
+        y=4;
+        for(std::map<MyGUI::WidgetPtr,LiveRef>::iterator it=mWItems.begin(); it!=mWItems.end(); it++){
+            it->first->setPosition(x,y);
+            if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
+                y=4;
+                x+=iIconSize+iSpacingSize;
+
+            }else{
+                y+=iIconSize+iSpacingSize;
+                if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                    scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
+                    scroll->setScrollViewPage(scroll->getScrollRange());
+                }else{
+                    scroll->setScrollPosition(0);
+                    scroll->setScrollRange(1);
+                    lastPos=0;
+                }
+            }
+        }
+*/
+        x=4-lastPos;
+        y=4;
+        for(std::map<MyGUI::WidgetPtr,std::string>::iterator it=mWItemsTEST.begin(); it!=mWItemsTEST.end(); it++){
+            it->first->setPosition(x,y);
+            if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
+                y=4;
+                x+=iIconSize+iSpacingSize;
+
+            }else{
+                y+=iIconSize+iSpacingSize;
+                if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                    scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
+                    scroll->setScrollViewPage(scroll->getScrollRange());
+                }else{
+                    scroll->setScrollPosition(0);
+                    scroll->setScrollRange(1);
+                    lastPos=0;
+                }
+            }
+        }
+      break;
+      case 2: //FIXME: test.
+        for(std::multimap<MyGUI::WidgetPtr, std::string>::iterator it= mWItemsTEST.begin();it!= mWItemsTEST.end();it++){
+            MyGUI::Gui::getInstance().destroyWidget(it->first);
         }
         mWItemsTEST.clear();
     
@@ -166,25 +224,25 @@ namespace MWGui{
         y=4;
 
         for(std::vector<std::string>::iterator it=mItemsTEST.begin();it!=mItemsTEST.end();it++){
-            Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, ICON_SIZE, ICON_SIZE, MyGUI::Align::Default );
+            Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
             Item->setImageTexture(*it);
-            Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onPick);
+            Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
 
-            mWItemsTEST.insert(std::make_pair(*it,Item));
+            mWItemsTEST.insert(std::make_pair(Item, *it));
 
-            if(y+ICON_SIZE+ICON_SPACING+ICON_SIZE+16 > items->getClientCoord().bottom()){
+            if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
                 y=4;
-                x+=ICON_SIZE+ICON_SPACING;
+                x+=iIconSize+iSpacingSize;
 
             }else{
-                y+=ICON_SIZE+ICON_SPACING;
-                if(x+ICON_SIZE+ICON_SPACING>items->getClientCoord().right()){
-                    scroll->setScrollRange(x+ICON_SIZE+ICON_SPACING+lastPos-items->getClientCoord().right());
+                y+=iIconSize+iSpacingSize;
+                if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                    scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
                     scroll->setScrollViewPage(scroll->getScrollRange());
-                }
+        		}
             }
         }
-    break;
+      break;
     }
   }
 
@@ -202,23 +260,30 @@ namespace MWGui{
     }
 */
     //FIXME:TEST
-    for (std::map<std::string,MyGUI::StaticImagePtr>::const_iterator it = mWItemsTEST.begin(); it != mWItemsTEST.end(); ++it)
+    for (std::map<MyGUI::WidgetPtr,std::string>::const_iterator it = mWItemsTEST.begin(); it != mWItemsTEST.end(); ++it)
     {
-        (*it).second->setCoord((*it).second->getCoord() + MyGUI::IntPoint(diff, 0));
+        it->first->setCoord( it->first->getCoord() + MyGUI::IntPoint(diff, 0));
     }
 
   }
-  void InventoryWindow::onPick(MyGUI::WidgetPtr _sender)
+  void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
+//    addItem("icons\\c\\tx_shirtcomm_03.dds");
 
-	addItem("icons\\c\\tx_shirtcomm_03.dds"); //just for test
+    if(!mDrag){ //drag
+//        if(){ //many items with same name should be stacked and dialog on number to take popups
+            //set separate mode, nothing can be done while in it (except ESC menu):
+//        }
 
-//    if(){ //many items with same name should be stacked and dialog on number to take popups
-        //set separate mode, nothing can be done while in it (except ESC menu):
-//    }
-    mDrag=true;
+        mDragingItemTest=mWItemsTEST.find(_sender)->second;
+        mDrag=true;
+    }else{ //drop the thing to inventory
+
+        mDrag=false;
+    }
   }
-  void InventoryWindow::onEquip(MyGUI::Widget* _sender)
+
+  void InventoryWindow::onAvatarClick(MyGUI::Widget* _sender)
   {
     if(mDrag){
 
@@ -235,16 +300,31 @@ namespace MWGui{
 
         }else{ //armor/clothing and misc is rest
 */
-        if(true){ //type wearable not misc
-            //TODO:check for already equipped, redecorate it, and add newly equipped to invetory gui
-            mEquipped[3]=mDragingItem;
-        }
-//        printf("%s equipped at slot:%i\n",mDragingItem.first.c_str(), mDragingItem.second);
+            if(true){ //type wearable not misc
+                //TODO:check for already equipped item, redecorate it, and add newly equipped to invetory gui
+                mEquipped[BP_SHIRT]=mDragingItem;
+            }
+//      }
         mDrag=false;
 
-        }else{  //items can be stripped from avatar
+    }else{  //items can be stripped from avatar
+
     }
   }
+
+  void InventoryWindow::onResize(MyGUI::Window*_sender)
+  {
+    printf("%i:%i\n",mMainWidget->getCoord().width,mMainWidget->getCoord().height);
+    mAvatarWidget->setSize(
+      (mMainWidget->getCoord().height-mAvatarWidget->getCoord().top-48)/avatarAspect,
+      mMainWidget->getCoord().height-mAvatarWidget->getCoord().top-48);
+
+    items->setPosition(mAvatarWidget->getCoord().right()+4, items->getCoord().top);
+    items->setCoord(mAvatarWidget->getCoord().right()+4, items->getCoord().top,mMainWidget->getClientCoord().width-mAvatarWidget->getCoord().right()-8,items->getCoord().height);
+
+    refreshView(1);
+  }
+
     //FIXME: test
   void InventoryWindow::addItem(std::string str)
   {

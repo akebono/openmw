@@ -10,11 +10,11 @@
 
         <!-- Avatar -->
         <Widget type="Widget" skin="MW_Box" position="8 32 212 166" align="ALIGN_VSTRETCH ALIGN_LEFT" name="Avatar">
-            <Widget type="StaticText" skin="ProgressText" position="0 -8 212 18" align="HCenter Bottom ALIGN_STRETCH" name="ArmorRating"/>
+            <Widget type="StaticText" skin="ProgressText" position="0 -8 212 18" align="ALIGN_HSTRETCH ALIGN_BOTTOM" name="ArmorRating"/>
         </Widget>
 
         <!-- Items in inventory -->
-        <Widget type="Widget" skin="MW_Box" position="228 32 352 166" align="ALIGN_STRETCH" name="Items">
+        <Widget type="Widget" skin="MW_Box" position="228 32 352 166" align="ALIGN_VSTRETCH ALIGN_RIGHT" name="Items">
             <Widget type="HScroll" skin="MW_HScroll" position="4 148 344 14" align="ALIGN_BOTTOM ALIGN_HSTRETCH" name="InventoryScroller"/>
         </Widget>
 
