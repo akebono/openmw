@@ -3,7 +3,7 @@
 #include "../mwworld/class.hpp"
 #include "../mwworld/environment.hpp"
 namespace MWGui{
-  InventoryWindow::InventoryWindow ()
+  InventoryWindow::InventoryWindow ()//MWWorld::ContainerStore<MWWorld::RefData>& conatiner)
     : Layout("openmw_inventory_window_layout.xml")
     , categoryMode(CM_All)
 
@@ -16,7 +16,8 @@ namespace MWGui{
     , avatarAspect(2.217)
   {
 
-//    player = environment.mWorld->getPtr ("player", true)
+//    player = environment.mWorld->getPtr ("player", true);
+//    mContainer=container;
 
     setCoord(0, 400, 500, 300);
     // These are just demo values, you should replace these with
@@ -46,7 +47,8 @@ namespace MWGui{
     getWidget(items, "Items");
 
     getWidget(mAvatarWidget, "Avatar");
-    
+
+    mAvatarWidget->setSize(mAvatarWidget->getSize().height/avatarAspect,mAvatarWidget->getSize().height);
     mAvatarWidget->eventMouseButtonClick=MyGUI::newDelegate(this, &InventoryWindow::onAvatarClick);
 
     // Adjust armor rating text to bottom of avatar widget
@@ -126,55 +128,50 @@ namespace MWGui{
 
   void InventoryWindow::addItem(MWWorld::Ptr &ptr)
   {
-    mItems.push_back(ptr);
-    refreshView(0);
+//    mItems.push_back(ptr);
+//    refreshView(0);
   }
 
-  void InventoryWindow::refreshView(int i)
+  void InventoryWindow::refreshView(MWWorld::ContainerStore<MWWorld::RefData>  container , int i)
   {
     MyGUI::StaticImagePtr Item;
 
     switch(i){
       case 0: //category change/new item. mindless smashing and recreating of all widgets
-/*
-        for(std::map<MWWorld::Ptr, MyGUI::StaticImagePtr>::iterator it= mWItems.begin();it!= mWItems.end();it++){
-            MyGUI::Gui::getInstance().destroyWidget(it->second);
+        for(std::multimap<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mWItems.begin();it!= mWItems.end();it++){
+            MyGUI::Gui::getInstance().destroyWidget(it->first);
         }
 
         mWItems.clear();
         x=4;
         y=4;
-        for(
-            std::list<LiveRef>::iterator it=MWWorld::Class::get (player).getContainerStore (player).list.begin();
-            it!=MWWorld::Class::get (player).getContainerStore (player).list.end();
-            it++){
+//        if(categoryMode==CM_All){
+        for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= container.weapons.list.begin();it!= container.weapons.list.end();it++){
+            Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
+//            MWWorld::Ptr* ptr=new MWWorld::Ptr<ESM::Weapon>(it,0);
+            Item->setImageTexture(it->base->icon);//MWWorld::Class::get (ptr).getInventoryIcon (ptr));
+            Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
+            mWItems.insert(std::make_pair(Item, *it));
 
-            if(categoryMode==CM_Misc && ! it->getTypeName().substr(8,13).compare("Miscellaneous")){
-                Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
-                Item->setImageTexture(MWWorld::Class::get (ptr).getInventoryIcon (ptr));
-                Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onPick);
-                mWItems.insert(std::make_pair(*it,Item));
+            if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
+                y=4;
+                x+=iIconSize+iSpacingSize;
 
-                if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
-                    y=4;
-                    x+=iIconSize+iSpacingSize;
-
-                }else{
-                    y+=iIconSize+iSpacingSize;
-                    if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
-                        scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
-                        scroll->setScrollViewPage(scroll->getScrollRange());
-                    }
+            }else{
+                y+=iIconSize+iSpacingSize;
+                if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                    scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
+                    scroll->setScrollViewPage(scroll->getScrollRange());
                 }
             }
         }
-*/
+//        } //category
       break;
       case 1: //resize
-/*
+
         x=4-lastPos;
         y=4;
-        for(std::map<MyGUI::WidgetPtr,LiveRef>::iterator it=mWItems.begin(); it!=mWItems.end(); it++){
+        for(std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it=mWItems.begin(); it!=mWItems.end(); it++){
             it->first->setPosition(x,y);
             if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
                 y=4;
@@ -192,7 +189,7 @@ namespace MWGui{
                 }
             }
         }
-*/
+/* //FIXME:test
         x=4-lastPos;
         y=4;
         for(std::map<MyGUI::WidgetPtr,std::string>::iterator it=mWItemsTEST.begin(); it!=mWItemsTEST.end(); it++){
@@ -213,6 +210,7 @@ namespace MWGui{
                 }
             }
         }
+*/
       break;
       case 2: //FIXME: test.
         for(std::multimap<MyGUI::WidgetPtr, std::string>::iterator it= mWItemsTEST.begin();it!= mWItemsTEST.end();it++){
@@ -285,9 +283,9 @@ namespace MWGui{
 
   void InventoryWindow::onAvatarClick(MyGUI::Widget* _sender)
   {
-    if(mDrag){
+/*    if(mDrag){
 
-/*      //TODO: get type of Ptr somehow, and do gui accordingly
+      //TODO: get type of Ptr somehow, and do gui accordingly
         if(mDragingItem type == "apparatus"){
             //show alchemy gui etc.
         }else if(mDragingItem type == "book"){
@@ -299,36 +297,35 @@ namespace MWGui{
         }else if(mDragingItem type == "repairment"){
 
         }else{ //armor/clothing and misc is rest
-*/
+
             if(true){ //type wearable not misc
                 //TODO:check for already equipped item, redecorate it, and add newly equipped to invetory gui
                 mEquipped[BP_SHIRT]=mDragingItem;
             }
-//      }
+        }
         mDrag=false;
-
     }else{  //items can be stripped from avatar
 
     }
+*/
   }
 
   void InventoryWindow::onResize(MyGUI::Window*_sender)
   {
-    printf("%i:%i\n",mMainWidget->getCoord().width,mMainWidget->getCoord().height);
     mAvatarWidget->setSize(
-      (mMainWidget->getCoord().height-mAvatarWidget->getCoord().top-48)/avatarAspect,
-      mMainWidget->getCoord().height-mAvatarWidget->getCoord().top-48);
+      (mMainWidget->getCoord().height-mAvatarWidget->getCoord().top-42)/avatarAspect,
+      mMainWidget->getCoord().height-mAvatarWidget->getCoord().top-42);
 
     items->setPosition(mAvatarWidget->getCoord().right()+4, items->getCoord().top);
     items->setCoord(mAvatarWidget->getCoord().right()+4, items->getCoord().top,mMainWidget->getClientCoord().width-mAvatarWidget->getCoord().right()-8,items->getCoord().height);
 
-    refreshView(1);
+//    refreshView(1);
   }
 
     //FIXME: test
   void InventoryWindow::addItem(std::string str)
   {
     mItemsTEST.push_back(str);
-    refreshView(2);
+//    refreshView(2);
   }
 } //namespace

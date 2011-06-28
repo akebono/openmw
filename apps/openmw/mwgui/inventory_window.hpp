@@ -41,7 +41,7 @@ namespace MWGui
         BP_RING_LEFT = 11,
         BP_RING_RIGHT = 12,
       };
-    InventoryWindow ();
+    InventoryWindow();
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
@@ -62,16 +62,18 @@ namespace MWGui
     void onInventoryClick(MyGUI::WidgetPtr);
     void onAvatarClick(MyGUI::WidgetPtr);
     void onResize(MyGUI::Window* _sender);
-    void refreshView(int);
+    void refreshView(MWWorld::ContainerStore<MWWorld::RefData>, int);
 
-    std::vector<MWWorld::Ptr> mItems;
-//    MWWorld::Ptr player;
+//    std::vector<MWWorld::Ptr> mItems;
 
-    std::multimap<MyGUI::WidgetPtr, MWWorld::Ptr> mWItems;
+    MWWorld::ContainerStore<MWWorld::RefData> mContainer;
+
+//    template <typename X>
+    std::multimap<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> > mWItems;
 
     bool mDrag;
     MWWorld::Ptr mDragingItem;
-    std::map<int,MWWorld::Ptr> mEquipped; //slot, item
+
     int x;
     int y;
     int lastPos;
