@@ -59,9 +59,10 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
     map = new MapWindow();
     stats = new StatsWindow(*this);
 #if 1
+//    MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
+//    MWWorld::ContainerStore<MWWorld::RefData> container=MWWorld::Class::get (player).getContainerStore (player);
     inventory = new InventoryWindow ();
     inventory->setVisible(false);
-    inventory->addItem("icons\\c\\tx_shirtcomm_03.dds");
 #endif
     console = new Console(w,h, environment, extensions);
     mMessageBoxManager = new MessageBoxManager(this);
@@ -317,6 +318,11 @@ void WindowManager::updateVisible()
         map   -> setVisible( (eff & GW_Map) != 0 );
         stats -> setVisible( (eff & GW_Stats) != 0 );
 #if 1
+        //XXX:'container' parameter in constructor not working
+        MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
+        MWWorld::ContainerStore<MWWorld::RefData> container=MWWorld::Class::get (player).getContainerStore (player);
+
+        inventory->refreshView(0,container);
         inventory -> setVisible( eff & GW_Inventory );
 #endif
         return;

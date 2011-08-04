@@ -42,6 +42,7 @@ namespace MWGui
         BP_RING_RIGHT = 12,
       };
     InventoryWindow();
+    InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*);
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
@@ -56,19 +57,17 @@ namespace MWGui
 
     MyGUI::Colour activeColor;
     MyGUI::Colour inactiveColor;
-
+//    void refreshView(int);
+    void refreshView(int,MWWorld::ContainerStore<MWWorld::RefData>);
   private:
     void onScrollChangePosition(MyGUI::VScrollPtr, size_t);
     void onInventoryClick(MyGUI::WidgetPtr);
     void onAvatarClick(MyGUI::WidgetPtr);
     void onResize(MyGUI::Window* _sender);
-    void refreshView(MWWorld::ContainerStore<MWWorld::RefData>, int);
-
-//    std::vector<MWWorld::Ptr> mItems;
 
     MWWorld::ContainerStore<MWWorld::RefData> mContainer;
 
-//    template <typename X>
+    //soon will be done, somehow
     std::multimap<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> > mWItems;
 
     bool mDrag;
@@ -83,12 +82,13 @@ namespace MWGui
     MyGUI::HScrollPtr scroll;
     const int iIconSize;
     const int iSpacingSize;
-    const float avatarAspect;
+    float avatarAspect;
     //FIXME:TEST
   public:
     void addItem(std::string);
+    void test(MWWorld::Ptr);
   private:
-
+    std::vector<MWWorld::Ptr> testvalue;
     std::vector<std::string> mItemsTEST;
     std::string mDragingItemTest;
     std::multimap<MyGUI::WidgetPtr, std::string> mWItemsTEST;

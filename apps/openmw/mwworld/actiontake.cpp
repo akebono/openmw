@@ -16,7 +16,6 @@ namespace MWWorld
 
         MWWorld::Class::get (mObject).insertIntoContainer (mObject,
             MWWorld::Class::get (player).getContainerStore (player));
-		printf("TYPENAME=%s\n",mObject.getTypeName().c_str());
         // remove from world
         environment.mWorld->deleteObject (mObject);
     }
