@@ -12,6 +12,8 @@
             <Property key="Edit_MultiLine" value="1" />
             <Property key="Edit_VisibleVScroll" value="1" />
             <Property key="Widget_AlignText" value="ALIGN_CENTER" />
+            <Property key="FontName" value = "MyGUI_CoreFont.18" />
+            <Property key="TextColour" value = "0.7 0.7 0.7" />
         </Widget>
     </Widget>
 </MyGUI>
