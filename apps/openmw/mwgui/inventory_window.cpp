@@ -232,6 +232,9 @@ namespace MWGui{
   {
     MyGUI::StaticImagePtr Item;
     mContainer=container;
+    //probing for alternative name of icon
+    std::string icon("icons\\");
+
     switch(i){
       case 0: //category change/new item. mindless smashing and recreating of all widgets
         for(std::multimap<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mWItems.begin();it!= mWItems.end();it++){
@@ -244,9 +247,11 @@ namespace MWGui{
 //        if(categoryMode==CM_All){
         for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer.weapons.list.begin();it!= mContainer.weapons.list.end();it++){
             Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
-           // MWWorld::Ptr ptr=MWWorld::Ptr(*it,0);
-            printf("icon texture:%s\n",it->base->icon.c_str());
-            Item->setImageTexture(it->base->icon);//MWWorld::Class::get (ptr).getInventoryIcon (ptr));
+            //MWWorld::Ptr ptr(*it,0);
+            icon+=it->base->icon; //just for prove
+            icon.replace(26,3,"dds");
+            printf("icon texture:%s\n%s\n",it->base->icon.c_str(),icon.c_str());
+            Item->setImageTexture(icon);//MWWorld::Class::get (ptr).getInventoryIcon (ptr));
             Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
             mWItems.insert(std::make_pair(Item, *it));
             printf("DONE:%s\n",it->base->icon.c_str());
