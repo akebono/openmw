@@ -68,7 +68,14 @@ namespace MWGui
     MWWorld::ContainerStore<MWWorld::RefData> mContainer;
 
     //soon will be done, somehow
-    std::multimap<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> > mWItems;
+    std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> > mWeapons;
+    std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> > mArmors;
+    std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> > mMisc;
+    std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> > mPotions;
+    std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> > mApparatus;
+    std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> > mIngredients;
+    std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData> > mClothings;
+    std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> > mBooks;
 
     bool mDrag;
     MWWorld::Ptr mDragingItem;
