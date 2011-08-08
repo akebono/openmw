@@ -24,23 +24,6 @@ namespace MWGui
         CM_Magic = 3,    // Magic
         CM_Misc = 4      // Misc
       };
-    enum BodyPart
-      {
-        BP_HEAD = 0,
-        BP_SHOULDERS = 1,
-        BP_WRIST_LEFT = 2,
-        BP_WRIST_RIGHT = 3,
-        BP_CUIRASS = 4,
-        BP_GREAVES = 5,
-        BP_BOOTS = 6,
-        //clothing
-        BP_SHIRT = 7,
-        BP_PANTS = 8,
-        BP_AMULET = 9,
-        BP_BELT = 10,
-        BP_RING_LEFT = 11,
-        BP_RING_RIGHT = 12,
-      };
 
     InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*);
     void setCategory(CategoryMode mode);
