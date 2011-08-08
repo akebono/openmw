@@ -18,8 +18,6 @@ namespace MWGui{
     , avatarAspect(2.217)
   {
 
-//    player = environment.mWorld->getPtr ("player", true);
-//    MWWorld::ContainerStore<MWWorld::RefData>;
     mContainer=container;
 
     setCoord(0, 400, 500, 300);
@@ -50,7 +48,7 @@ namespace MWGui{
     getWidget(items, "Items");
 
     getWidget(mAvatarWidget, "Avatar");
-//    printf("avatar:%f:%i\n",avatarAspect,mAvatarWidget->getSize().height);
+
     mAvatarWidget->setSize(mAvatarWidget->getSize().height/avatarAspect,mAvatarWidget->getSize().height);
     mAvatarWidget->eventMouseButtonClick=MyGUI::newDelegate(this, &InventoryWindow::onAvatarClick);
 
@@ -101,12 +99,12 @@ namespace MWGui{
 
   void InventoryWindow::setCategory(CategoryMode mode)
   {
-      MyGUI::ButtonPtr pt = getCategoryButton(categoryMode);
-      pt->setTextColour(inactiveColor);
-
-      pt = getCategoryButton(mode);
-      pt->setTextColour(activeColor);
-      categoryMode = mode;
+    MyGUI::ButtonPtr pt = getCategoryButton(categoryMode);
+    pt->setTextColour(inactiveColor);
+    pt = getCategoryButton(mode);
+    pt->setTextColour(activeColor);
+    categoryMode = mode;
+    refreshView(0);
   }
 
   MyGUI::ButtonPtr InventoryWindow::getCategoryButton(CategoryMode mode)
@@ -136,13 +134,10 @@ namespace MWGui{
 //    refreshView(0);
   }
 
-//TODO: commented prototype, and sorting, and stacking
+
   void InventoryWindow::refreshView(int i)
-//  void InventoryWindow::refreshView(int i, MWWorld::ContainerStore<MWWorld::RefData> container)
   {
     MyGUI::StaticImagePtr Item;
-    //mContainer=container;
-
     std::string icon; // storage for icon name manipualtion
 
     switch(i){
@@ -503,7 +498,7 @@ namespace MWGui{
   {
 
     if(!mDrag){ //drag
-//        if(){ //many items with same name should be stacked and dialog on number to take popups
+//        if(){ //many items with same name should be stacked and dialog on number to take popups.
             //set separate mode, nothing can be done while in it (except ESC menu):
 //        }
         mDrag=true;
@@ -553,5 +548,5 @@ namespace MWGui{
     refreshView(1);
   }
 
-
 } //namespace
+
