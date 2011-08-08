@@ -59,10 +59,10 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
     map = new MapWindow();
     stats = new StatsWindow(*this);
 #if 1
-//    MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
-// XXX:somehow ill do the pointer of container
-//    MWWorld::ContainerStore<MWWorld::RefData> container=MWWorld::Class::get (player).getContainerStore (player);
-    inventory = new InventoryWindow ();
+    MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
+    MWWorld::ContainerStore<MWWorld::RefData> *container;
+    container=&MWWorld::Class::get (player).getContainerStore (player);
+    inventory = new InventoryWindow (container);
     inventory->setVisible(false);
 #endif
     console = new Console(w,h, environment, extensions);
@@ -319,12 +319,7 @@ void WindowManager::updateVisible()
         map   -> setVisible( (eff & GW_Map) != 0 );
         stats -> setVisible( (eff & GW_Stats) != 0 );
 #if 1
-        //XXX:'container' parameter in constructor not working
-        MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
-        MWWorld::ContainerStore<MWWorld::RefData> container;
-	container=MWWorld::Class::get (player).getContainerStore (player);
-
-        inventory->refreshView(0,container);
+        inventory->refreshView(0);
         inventory -> setVisible( eff & GW_Inventory );
 #endif
         return;

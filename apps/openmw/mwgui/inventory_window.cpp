@@ -4,99 +4,6 @@
 #include "../mwworld/environment.hpp"
 #include "../mwworld/refdata.hpp"
 namespace MWGui{
-  InventoryWindow::InventoryWindow ()//MWWorld::ContainerStore<MWWorld::RefData>& conatiner)
-    : Layout("openmw_inventory_window_layout.xml")
-    , categoryMode(CM_All)
-
-    // color should be fetched from skin
-    , activeColor(0, 0, 1)
-    , inactiveColor(0.7, 0.7, 0.7)
-    , mDrag(false)
-    , lastPos(0)
-    , iIconSize(40)
-    , iSpacingSize(8)
-    , avatarAspect(2.217)
-  {
-
-//    player = environment.mWorld->getPtr ("player", true);
-//    mContainer=container;
-
-    setCoord(0, 400, 500, 300);
-    // These are just demo values, you should replace these with
-    // real calls from outside the class later.
-
-    mMainWidget->setCaption("Glass Frostsword");
-    MyGUI::Window* window = mMainWidget->castType<MyGUI::Window>(false);
-    window->eventWindowChangeCoord=MyGUI::newDelegate(this,&InventoryWindow::onResize);
-    window->setMinSize(200,64);
-
-    setText("EncumbranceBarT", "176/210");
-
-    MyGUI::ProgressPtr pt;
-    getWidget(pt, "EncumbranceBar");
-    pt->setProgressRange(210);
-    pt->setProgressPosition(176);
-
-    getWidget(scroll, "InventoryScroller");
-    scroll->setVisible(true);
-    scroll->setTrackSize(16);
-    scroll->setScrollRange(1);
-    scroll->setScrollPage(iIconSize+iSpacingSize);
-
-
-    scroll->eventScrollChangePosition = MyGUI::newDelegate(this,&InventoryWindow::onScrollChangePosition);
-
-    getWidget(items, "Items");
-
-    getWidget(mAvatarWidget, "Avatar");
-
-    mAvatarWidget->setSize(mAvatarWidget->getSize().height/avatarAspect,mAvatarWidget->getSize().height);
-    mAvatarWidget->eventMouseButtonClick=MyGUI::newDelegate(this, &InventoryWindow::onAvatarClick);
-
-    // Adjust armor rating text to bottom of avatar widget
-    MyGUI::StaticTextPtr armor_rating;
-    getWidget(armor_rating, "ArmorRating");
-    armor_rating->setCaption("Armor: 11");
-    MyGUI::IntCoord coord = armor_rating->getCoord();
-
-    coord.top =mAvatarWidget->getCoord().height - 4 - coord.height;
-    armor_rating->setCoord(coord);
-
-    names[0] = "All";
-    names[1] = "Weapon";
-    names[2] = "Apparel";
-    names[3] = "Magic";
-    names[4] = "Misc";
-
-    boost::array<CategoryMode, 5> categories = { {
-      CM_All, CM_Weapon, CM_Apparel, CM_Magic, CM_Misc
-    } };
-
-    // Initialize buttons with text and adjust sizes, also mark All as active button
-    int margin = 2;
-    int last_x = 0;
-    for (unsigned int i = 0; i < categories.size(); ++i)
-    {
-        CategoryMode mode = categories[i];
-        std::string name = names[mode];
-        name += "Button";
-        setText(name, names[mode]);
-        getWidget(buttons[mode], name);
-
-        MyGUI::ButtonPtr &button_pt = buttons[mode];
-        if (mode == CM_All)
-            button_pt->setTextColour(activeColor);
-        else
-            button_pt->setTextColour(inactiveColor);
-        MyGUI::IntCoord coord = button_pt->getCoord();
-        coord.left = last_x;
-        last_x += coord.width + margin;
-        button_pt->setCoord(coord);
-
-        button_pt->eventMouseButtonClick = MyGUI::newDelegate(this, &InventoryWindow::onCategorySelected);
-    }
-  }
-
   InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container)
     : Layout("openmw_inventory_window_layout.xml")
     , categoryMode(CM_All)
@@ -113,7 +20,7 @@ namespace MWGui{
 
 //    player = environment.mWorld->getPtr ("player", true);
 //    MWWorld::ContainerStore<MWWorld::RefData>;
-    //mContainer=container;
+    mContainer=container;
 
     setCoord(0, 400, 500, 300);
     // These are just demo values, you should replace these with
@@ -230,11 +137,11 @@ namespace MWGui{
   }
 
 //TODO: commented prototype, and sorting, and stacking
-//  void InventoryWindow::refreshView(int i)
-  void InventoryWindow::refreshView(int i, MWWorld::ContainerStore<MWWorld::RefData> container)
+  void InventoryWindow::refreshView(int i)
+//  void InventoryWindow::refreshView(int i, MWWorld::ContainerStore<MWWorld::RefData> container)
   {
     MyGUI::StaticImagePtr Item;
-    mContainer=container;
+    //mContainer=container;
 
     std::string icon; // storage for icon name manipualtion
 
@@ -248,7 +155,7 @@ namespace MWGui{
         x=4-lastPos;
         y=4;
         if(categoryMode==CM_All ||categoryMode==CM_Weapon){
-            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer.weapons.list.begin();it!= mContainer.weapons.list.end();it++){ //
+            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++){ //
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -275,7 +182,7 @@ namespace MWGui{
             }
         } //category CM_Weapon
         if(categoryMode==CM_All ||categoryMode==CM_Apparel){
-            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer.armors.list.begin();it!= mContainer.armors.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
                 icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
@@ -300,7 +207,7 @@ namespace MWGui{
             }
         } //category CM_Apparel
         if(categoryMode==CM_All ||categoryMode==CM_Magic){ //there are should be more items
-            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer.weapons.list.begin();it!= mContainer.weapons.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -324,7 +231,7 @@ namespace MWGui{
                     }
                 }
             } //magic Weapon
-            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer.armors.list.begin();it!= mContainer.armors.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 /*                if(it->base->enchant != 0)
                     printf("enchanted?\n");
@@ -352,7 +259,7 @@ namespace MWGui{
                     }
                 }
             } //magic Armor
-            for(std::list<ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> >::iterator it= mContainer.potions.list.begin();it!= mContainer.potions.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> >::iterator it= mContainer->potions.list.begin();it!= mContainer->potions.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -376,7 +283,7 @@ namespace MWGui{
                     }
                 }
             } //Potion
-            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer.books.list.begin();it!= mContainer.books.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -403,7 +310,7 @@ namespace MWGui{
 
         } //category CM_Magic
         if(categoryMode==CM_All ||categoryMode==CM_Misc){
-            for(std::list<ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> >::iterator it= mContainer.ingreds.list.begin();it!= mContainer.ingreds.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> >::iterator it= mContainer->ingreds.list.begin();it!= mContainer->ingreds.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -427,7 +334,7 @@ namespace MWGui{
                     }
                 }
             } //Ingredient
-            for(std::list<ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> >::iterator it= mContainer.appas.list.begin();it!= mContainer.appas.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> >::iterator it= mContainer->appas.list.begin();it!= mContainer->appas.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -451,7 +358,7 @@ namespace MWGui{
                     }
                 }
             } //Apparatus
-            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer.books.list.begin();it!= mContainer.books.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -475,7 +382,7 @@ namespace MWGui{
                     }
                 }
             } //Book
-            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer.lockpicks.list.begin();it!= mContainer.lockpicks.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer->lockpicks.list.begin();it!= mContainer->lockpicks.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -499,7 +406,7 @@ namespace MWGui{
                     }
                 }
             } //Lockpicks
-            for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer.miscItems.list.begin();it!= mContainer.miscItems.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer->miscItems.list.begin();it!= mContainer->miscItems.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -523,7 +430,7 @@ namespace MWGui{
                     }
                 }
             } //Miscellaneous (keys, gold, soulgems, propylon indexes etc.)
-            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer.probes.list.begin();it!= mContainer.probes.list.end();it++){
+            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer->probes.list.begin();it!= mContainer->probes.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
@@ -595,9 +502,6 @@ namespace MWGui{
   void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
 
-//    MyGUI::StaticImagePtr Item;
-//    Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
-//    Item->setImageTexture("icons\\c\\tx_shirtcomm_03.dds");
     if(!mDrag){ //drag
 //        if(){ //many items with same name should be stacked and dialog on number to take popups
             //set separate mode, nothing can be done while in it (except ESC menu):
@@ -646,8 +550,7 @@ namespace MWGui{
 
     items->setPosition(mAvatarWidget->getCoord().right()+4, items->getCoord().top);
     items->setCoord(mAvatarWidget->getCoord().right()+4, items->getCoord().top,mMainWidget->getClientCoord().width-mAvatarWidget->getCoord().right()-8,items->getCoord().height);
-//FIXME:container pointer 
-    refreshView(1,mContainer);
+    refreshView(1);
   }
 
 

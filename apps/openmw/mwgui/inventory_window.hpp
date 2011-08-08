@@ -41,12 +41,12 @@ namespace MWGui
         BP_RING_LEFT = 11,
         BP_RING_RIGHT = 12,
       };
-    InventoryWindow();
+
     InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*);
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
-    //FIXME: for scripts
+    //TODO: for scripts
     void addItem(MWWorld::Ptr& ptr);
 
 
@@ -57,19 +57,17 @@ namespace MWGui
 
     MyGUI::Colour activeColor;
     MyGUI::Colour inactiveColor;
-//    void refreshView(int);
-    void refreshView(int,MWWorld::ContainerStore<MWWorld::RefData>);
+    void refreshView(int);
+
   private:
     void onScrollChangePosition(MyGUI::VScrollPtr, size_t);
     void onInventoryClick(MyGUI::WidgetPtr);
     void onAvatarClick(MyGUI::WidgetPtr);
     void onResize(MyGUI::Window* _sender);
 
-    MWWorld::ContainerStore<MWWorld::RefData> mContainer;
+    MWWorld::ContainerStore<MWWorld::RefData> *mContainer;
 
-    //soon will be done, somehow
     std::map<MyGUI::WidgetPtr, MWWorld::Ptr> mItems;
-
 
     bool mDrag;
     MWWorld::Ptr mDragingItem;
