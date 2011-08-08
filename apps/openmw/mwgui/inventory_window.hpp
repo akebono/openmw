@@ -84,16 +84,6 @@ namespace MWGui
     const int iIconSize;
     const int iSpacingSize;
     float avatarAspect;
-    //FIXME:TEST
-  public:
-    void addItem(std::string);
-    void test(MWWorld::Ptr);
-  private:
-    std::vector<MWWorld::Ptr> testvalue;
-    std::vector<std::string> mItemsTEST;
-    std::string mDragingItemTest;
-    std::multimap<MyGUI::WidgetPtr, std::string> mWItemsTEST;
-    std::map<int,std::string> mEquippedTEST;
   };
 }
 #endif

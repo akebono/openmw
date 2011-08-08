@@ -60,8 +60,8 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
     stats = new StatsWindow(*this);
 #if 1
 //    MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
-//    MWWorld::ContainerStore<MWWorld::RefData> container;
-//    container=MWWorld::Class::get (player).getContainerStore (player);
+// XXX:somehow ill do the pointer of container
+//    MWWorld::ContainerStore<MWWorld::RefData> container=MWWorld::Class::get (player).getContainerStore (player);
     inventory = new InventoryWindow ();
     inventory->setVisible(false);
 #endif

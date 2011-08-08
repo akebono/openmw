@@ -229,6 +229,7 @@ namespace MWGui{
 //    refreshView(0);
   }
 
+//TODO: commented prototype, and sorting, and stacking
 //  void InventoryWindow::refreshView(int i)
   void InventoryWindow::refreshView(int i, MWWorld::ContainerStore<MWWorld::RefData> container)
   {
@@ -325,7 +326,11 @@ namespace MWGui{
             } //magic Weapon
             for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer.armors.list.begin();it!= mContainer.armors.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
-
+/*                if(it->base->enchant != 0)
+                    printf("enchanted?\n");
+                else
+                    printf("not enchanted?\n");
+*/
                 MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
                 icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
                 size_t found=icon.rfind(".tga");
@@ -470,6 +475,30 @@ namespace MWGui{
                     }
                 }
             } //Book
+            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer.lockpicks.list.begin();it!= mContainer.lockpicks.list.end();it++){
+                Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
+
+                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
+                icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
+                size_t found=icon.rfind(".tga");
+                if (found!=std::string::npos)
+                    icon.replace (found,strlen(".tga"),".dds");
+
+                Item->setImageTexture("icons\\"+icon);//MWWorld::Class::get (ptr).getInventoryIcon (ptr));
+                Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
+                mItems.insert(std::make_pair(Item, ptr));
+                if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
+                    y=4;
+                    x+=iIconSize+iSpacingSize;
+
+                }else{
+                    y+=iIconSize+iSpacingSize;
+                    if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                        scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
+                        scroll->setScrollViewPage(scroll->getScrollRange());
+                    }
+                }
+            } //Lockpicks
             for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer.miscItems.list.begin();it!= mContainer.miscItems.list.end();it++){
                 Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 
@@ -493,15 +522,39 @@ namespace MWGui{
                         scroll->setScrollViewPage(scroll->getScrollRange());
                     }
                 }
-            } //Miscellaneous
+            } //Miscellaneous (keys, gold, soulgems, propylon indexes etc.)
+            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer.probes.list.begin();it!= mContainer.probes.list.end();it++){
+                Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
+
+                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
+                icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
+                size_t found=icon.rfind(".tga");
+                if (found!=std::string::npos)
+                    icon.replace (found,strlen(".tga"),".dds");
+
+                Item->setImageTexture("icons\\"+icon);//MWWorld::Class::get (ptr).getInventoryIcon (ptr));
+                Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
+                mItems.insert(std::make_pair(Item, ptr));
+                if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
+                    y=4;
+                    x+=iIconSize+iSpacingSize;
+
+                }else{
+                    y+=iIconSize+iSpacingSize;
+                    if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                        scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
+                        scroll->setScrollViewPage(scroll->getScrollRange());
+                    }
+                }
+            } //Probes
 
         } //category CM_Misc
       break;
       case 1: //resize
-/*
+
         x=4-lastPos;
         y=4;
-        for(std::map<MyGUI::WidgetPtr, ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it=mWItems.begin(); it!=mWItems.end(); it++){
+        for(std::map<MyGUI::WidgetPtr, MWWorld::Ptr >::iterator it=mItems.begin(); it!=mItems.end(); it++){
             it->first->setPosition(x,y);
             if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
                 y=4;
@@ -520,58 +573,7 @@ namespace MWGui{
             }
 
         }
-*/
-/* //FIXME:test
-        x=4-lastPos;
-        y=4;
-        for(std::map<MyGUI::WidgetPtr,std::string>::iterator it=mWItemsTEST.begin(); it!=mWItemsTEST.end(); it++){
-            it->first->setPosition(x,y);
-            if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
-                y=4;
-                x+=iIconSize+iSpacingSize;
 
-            }else{
-                y+=iIconSize+iSpacingSize;
-                if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
-                    scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
-                    scroll->setScrollViewPage(scroll->getScrollRange());
-                }else{
-                    scroll->setScrollPosition(0);
-                    scroll->setScrollRange(1);
-                    lastPos=0;
-                }
-            }
-        }
-*/
-      break;
-      case 2: //FIXME: test.
-        for(std::multimap<MyGUI::WidgetPtr, std::string>::iterator it= mWItemsTEST.begin();it!= mWItemsTEST.end();it++){
-            MyGUI::Gui::getInstance().destroyWidget(it->first);
-        }
-        mWItemsTEST.clear();
-    
-        x=4-lastPos;
-        y=4;
-
-        for(std::vector<std::string>::iterator it=mItemsTEST.begin();it!=mItemsTEST.end();it++){
-            Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
-            Item->setImageTexture(*it);
-            Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
-
-            mWItemsTEST.insert(std::make_pair(Item, *it));
-
-            if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
-                y=4;
-                x+=iIconSize+iSpacingSize;
-
-            }else{
-                y+=iIconSize+iSpacingSize;
-                if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
-                    scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
-                    scroll->setScrollViewPage(scroll->getScrollRange());
-                }
-            }
-        }
       break;
     }
   }
@@ -583,22 +585,16 @@ namespace MWGui{
     if (diff == 0)
         return;
     lastPos = pos;
-/*
-    for (std::map<MyGUI::StaticImagePtr,MWWorld::Ptr>::const_iterator it = mWItems.begin(); it != mWItems.end(); ++it)
-    {
-        (*it).second->setCoord((*it).second->getCoord() + MyGUI::IntPoint(diff, 0));
-    }
-*/
-    //FIXME:TEST
-    for (std::map<MyGUI::WidgetPtr,std::string>::const_iterator it = mWItemsTEST.begin(); it != mWItemsTEST.end(); ++it)
-    {
-        it->first->setCoord( it->first->getCoord() + MyGUI::IntPoint(diff, 0));
-    }
 
+    for (std::map<MyGUI::WidgetPtr,MWWorld::Ptr>::const_iterator it = mItems.begin(); it != mItems.end(); ++it)
+    {
+        it->first->setCoord(it->first->getCoord() + MyGUI::IntPoint(diff, 0));
+    }
   }
+
   void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
-    printf("invisible\n");
+
 //    MyGUI::StaticImagePtr Item;
 //    Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
 //    Item->setImageTexture("icons\\c\\tx_shirtcomm_03.dds");
@@ -650,21 +646,9 @@ namespace MWGui{
 
     items->setPosition(mAvatarWidget->getCoord().right()+4, items->getCoord().top);
     items->setCoord(mAvatarWidget->getCoord().right()+4, items->getCoord().top,mMainWidget->getClientCoord().width-mAvatarWidget->getCoord().right()-8,items->getCoord().height);
-
-//    refreshView(1);
+//FIXME:container pointer 
+    refreshView(1,mContainer);
   }
 
-    //FIXME: test
-  void InventoryWindow::addItem(std::string str)
-  {
-    mItemsTEST.push_back(str);
-//    refreshView(2);
-  }
-  void InventoryWindow::test(MWWorld::Ptr ptr)
-  {
-/*    for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++){
-        printf("test:%s\n",Ptr(*it,0)->base->icon.c_str());
-    }
-*/
-  }
+
 } //namespace
