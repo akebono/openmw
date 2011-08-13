@@ -47,6 +47,7 @@ namespace MWGui
     void onInventoryClick(MyGUI::WidgetPtr);
     void onAvatarClick(MyGUI::WidgetPtr);
     void onResize(MyGUI::Window* _sender);
+    void drawItemWidget(MWWorld::Ptr);
 
     MWWorld::ContainerStore<MWWorld::RefData> *mContainer;
 
