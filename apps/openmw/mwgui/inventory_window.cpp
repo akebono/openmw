@@ -293,7 +293,7 @@ namespace MWGui{
             }
         }
       break;
-      case 1: //resize
+      case 1: // rearange items after resize
 
         x=4-lastPos;
         y=4;
@@ -302,21 +302,18 @@ namespace MWGui{
             if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
                 y=4;
                 x+=iIconSize+iSpacingSize;
-
             }else{
                 y+=iIconSize+iSpacingSize;
-                if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
-                    scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
-                    scroll->setScrollViewPage(scroll->getScrollRange());
-                }else{
-                    scroll->setScrollPosition(0);
-                    scroll->setScrollRange(1);
-                    lastPos=0;
-                }
             }
-
+            if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
+                scroll->setScrollViewPage(scroll->getScrollRange());
+            }else{
+                scroll->setScrollPosition(0);
+                scroll->setScrollRange(1);
+                lastPos=0;
+            }
         }
-
       break;
     }
   }
