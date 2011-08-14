@@ -139,8 +139,6 @@ namespace MWGui{
   void InventoryWindow::refreshView(int i)
   {
 
-//    MyGUI::StaticTextPtr count;
-
     switch(i){
       case 0: //category change/new item. mindless smashing all widgets and recreating needed
         for(std::map<MyGUI::WidgetPtr, MWWorld::Ptr >::iterator it= mItems.begin();it!= mItems.end();it++)
@@ -152,145 +150,99 @@ namespace MWGui{
         y=4;
         if(categoryMode==CM_All){
             // Weapons
-            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++){ //
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++)
+                drawItemWidget(&*it);
             // Armor
-            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++)
+                drawItemWidget(&*it);
             // Potions
-            for(std::list<ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> >::iterator it= mContainer->potions.list.begin();it!= mContainer->potions.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> >::iterator it= mContainer->potions.list.begin();it!= mContainer->potions.list.end();it++)
+                drawItemWidget(&*it);
             // Ingredients
-            for(std::list<ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> >::iterator it= mContainer->ingreds.list.begin();it!= mContainer->ingreds.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> >::iterator it= mContainer->ingreds.list.begin();it!= mContainer->ingreds.list.end();it++)
+                drawItemWidget(&*it);
             // Books
-            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++)
+                drawItemWidget(&*it);
             // Apparatus
-            for(std::list<ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> >::iterator it= mContainer->appas.list.begin();it!= mContainer->appas.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> >::iterator it= mContainer->appas.list.begin();it!= mContainer->appas.list.end();it++)
+                drawItemWidget(&*it);
             // Lockpicks
-            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer->lockpicks.list.begin();it!= mContainer->lockpicks.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer->lockpicks.list.begin();it!= mContainer->lockpicks.list.end();it++)
+                drawItemWidget(&*it);
             // Miscellaneous (keys, gold, soulgems, propylon indexes etc.)
-            for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer->miscItems.list.begin();it!= mContainer->miscItems.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer->miscItems.list.begin();it!= mContainer->miscItems.list.end();it++)
+                drawItemWidget(&*it);
             // Probes
-            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer->probes.list.begin();it!= mContainer->probes.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer->probes.list.begin();it!= mContainer->probes.list.end();it++)
+                drawItemWidget(&*it);
             // Repairs
-            for(std::list<ESMS::LiveCellRef<ESM::Repair, MWWorld::RefData> >::iterator it= mContainer->repairs.list.begin();it!= mContainer->repairs.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Repair, MWWorld::RefData> >::iterator it= mContainer->repairs.list.begin();it!= mContainer->repairs.list.end();it++)
+                drawItemWidget(&*it);
         }
         if(categoryMode==CM_Weapon ){
-            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++){ //
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++)
+                drawItemWidget(&*it);
         }
         if(categoryMode==CM_Magic){
             // Magic Weapon
             for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++){
                 if(it->base->enchant == "")
                     break;
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
+                drawItemWidget(&*it);
             }
             // Magic Armor
             for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++){
                 if(it->base->enchant == "")
                     break;
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
+                drawItemWidget(&*it);
             }
             // Magic Clothing
             for(std::list<ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData> >::iterator it= mContainer->clothes.list.begin();it!= mContainer->clothes.list.end();it++){
                 if(it->base->enchant == "")
                     break;
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
+                drawItemWidget(&*it);
             }
             // Potions
-            for(std::list<ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> >::iterator it= mContainer->potions.list.begin();it!= mContainer->potions.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> >::iterator it= mContainer->potions.list.begin();it!= mContainer->potions.list.end();it++)
+                drawItemWidget(&*it);
             // Scrolls
             for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++){
                 if(it->base->enchant == "")
                     break;
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
+                drawItemWidget(&*it);
             }
         }
         if(categoryMode==CM_Apparel){
             // Armor
-            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++)
+                drawItemWidget(&*it);
             // Clothing
-            for(std::list<ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData> >::iterator it= mContainer->clothes.list.begin();it!= mContainer->clothes.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData> >::iterator it= mContainer->clothes.list.begin();it!= mContainer->clothes.list.end();it++)
+                drawItemWidget(&*it);
         }
         if(categoryMode==CM_Misc){
             //Ingredients
-            for(std::list<ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> >::iterator it= mContainer->ingreds.list.begin();it!= mContainer->ingreds.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> >::iterator it= mContainer->ingreds.list.begin();it!= mContainer->ingreds.list.end();it++)
+                drawItemWidget(&*it);
             // Books
-            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++)
+                drawItemWidget(&*it);
             // Apparatus
-            for(std::list<ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> >::iterator it= mContainer->appas.list.begin();it!= mContainer->appas.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> >::iterator it= mContainer->appas.list.begin();it!= mContainer->appas.list.end();it++)
+                drawItemWidget(&*it);
             // Lockpicks
-            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer->lockpicks.list.begin();it!= mContainer->lockpicks.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer->lockpicks.list.begin();it!= mContainer->lockpicks.list.end();it++)
+                drawItemWidget(&*it);
             // Miscellaneous
-            for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer->miscItems.list.begin();it!= mContainer->miscItems.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer->miscItems.list.begin();it!= mContainer->miscItems.list.end();it++)
+                drawItemWidget(&*it);
             // Probes
-            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer->probes.list.begin();it!= mContainer->probes.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer->probes.list.begin();it!= mContainer->probes.list.end();it++)
+                drawItemWidget(&*it);
             // Repairs
-            for(std::list<ESMS::LiveCellRef<ESM::Repair, MWWorld::RefData> >::iterator it= mContainer->repairs.list.begin();it!= mContainer->repairs.list.end();it++){
-                MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-                drawItemWidget(ptr);
-            }
+            for(std::list<ESMS::LiveCellRef<ESM::Repair, MWWorld::RefData> >::iterator it= mContainer->repairs.list.begin();it!= mContainer->repairs.list.end();it++)
+                drawItemWidget(&*it);
         }
       break;
       case 1: // rearange items after resize
@@ -386,12 +338,14 @@ namespace MWGui{
     refreshView(1);
   }
 
-  void InventoryWindow::drawItemWidget(MWWorld::Ptr ptr)
+  template <typename T>
+  void InventoryWindow::drawItemWidget(ESMS::LiveCellRef<T, MWWorld::RefData>* liveCellRef)
   {
     MyGUI::StaticImagePtr Item;
 //    MyGUI::StaticTextPtr count;
     std::string icon; // storage for icon name manipualtion
-
+    
+    MWWorld::Ptr ptr=MWWorld::Ptr(liveCellRef, 0);
     Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
     icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
     size_t found=icon.rfind(".tga");
