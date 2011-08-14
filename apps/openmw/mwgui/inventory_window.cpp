@@ -342,11 +342,12 @@ namespace MWGui{
   void InventoryWindow::drawItemWidget(ESMS::LiveCellRef<T, MWWorld::RefData>* liveCellRef)
   {
     MyGUI::StaticImagePtr Item;
-//    MyGUI::StaticTextPtr count;
+    MyGUI::StaticTextPtr countWidget;
     std::string icon; // storage for icon name manipualtion
-    
     MWWorld::Ptr ptr=MWWorld::Ptr(liveCellRef, 0);
+
     Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
+
     icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
     size_t found=icon.rfind(".tga");
     if (found!=std::string::npos)
@@ -354,6 +355,11 @@ namespace MWGui{
     else
         printf("non .tga icon returned for ptr\n(crash will possibly follow)\n");
     Item->setImageTexture("icons\\"+icon);
+    //FIXME: colour, align, stretching etc
+    if(ptr.getRefData().getCount()>1){ //==1){ //for test
+        countWidget=Item->createWidget<MyGUI::StaticText>("StaticText",25,23,20,20,MyGUI::Align::Default); //test values
+        countWidget->setCaption(MyGUI::utility::toString(ptr.getRefData().getCount()));
+    }
     Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
     mItems.insert(std::make_pair(Item, ptr));
     if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
