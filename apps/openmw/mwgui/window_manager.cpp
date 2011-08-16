@@ -9,7 +9,7 @@
 #include "dialogue_history.hpp"
 #include "stats_window.hpp"
 #include "messagebox.hpp"
-#include "inventory_window.hpp"
+#include "inventorywindow.hpp"
 
 #include "../mwmechanics/mechanicsmanager.hpp"
 #include "../mwinput/inputmanager.hpp"
@@ -58,13 +58,15 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
     menu = new MainMenu(w,h);
     map = new MapWindow();
     stats = new StatsWindow(*this);
-#if 1
+
     MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
     MWWorld::ContainerStore<MWWorld::RefData> *container;
     container=&MWWorld::Class::get (player).getContainerStore (player);
-    inventory = new InventoryWindow (container);
+
+
+//    ESMS::ESMStore store=environment.mWorld->getStore();
+    inventory = new InventoryWindow (container);//, store);
     inventory->setVisible(false);
-#endif
     console = new Console(w,h, environment, extensions);
     mMessageBoxManager = new MessageBoxManager(this);
 
@@ -84,6 +86,7 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
 
     // Set up visibility
     updateVisible();
+
 }
 
 WindowManager::~WindowManager()
@@ -94,9 +97,7 @@ WindowManager::~WindowManager()
     delete map;
     delete menu;
     delete stats;
-#if 1
     delete inventory;
-#endif
 
     delete nameDialog;
     delete raceDialog;
@@ -157,9 +158,8 @@ void WindowManager::updateVisible()
     map->setVisible(false);
     menu->setVisible(false);
     stats->setVisible(false);
-#if 1
     inventory->setVisible(false);
-#endif
+
     console->disable();
 
     // Mouse is visible whenever we're not in game mode
@@ -318,10 +318,9 @@ void WindowManager::updateVisible()
         // Show the windows we want
         map   -> setVisible( (eff & GW_Map) != 0 );
         stats -> setVisible( (eff & GW_Stats) != 0 );
-#if 1
         inventory->refreshView(0);
         inventory -> setVisible( eff & GW_Inventory );
-#endif
+
         return;
     }
 

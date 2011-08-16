@@ -25,7 +25,7 @@ namespace MWGui
         CM_Misc = 4      // Misc
       };
 
-    InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*);
+    InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*);//, ESMS::ESMStore&);
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
@@ -55,7 +55,7 @@ namespace MWGui
     std::map<MyGUI::WidgetPtr, MWWorld::Ptr> mItems;
 
     bool mDrag;
-    MWWorld::Ptr mDragingItem;
+    std::pair<MWWorld::Ptr,int> mDragingItem; //item,count pair
 
     int x;
     int y;

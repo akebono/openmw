@@ -29,7 +29,8 @@ namespace MWGui
       GM_Review,
       
       // interactive MessageBox
-      GM_InterMessageBox
+      GM_InterMessageBox,
+      GM_Split //splitting stack of multiple items
     };
 
   // Windows shown in inventory mode

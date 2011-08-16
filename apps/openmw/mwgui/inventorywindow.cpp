@@ -1,10 +1,11 @@
-
-#include "inventory_window.hpp"
+#include <components/esm_store/store.hpp>
+#include "inventorywindow.hpp"
 #include "../mwworld/class.hpp"
 #include "../mwworld/environment.hpp"
 #include "../mwworld/refdata.hpp"
+#include "fcntl.h"
 namespace MWGui{
-  InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container)
+  InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container)//, ESMS::ESMStore &esmstore)
     : Layout("openmw_inventory_window_layout.xml")
     , categoryMode(CM_All)
 
@@ -17,7 +18,6 @@ namespace MWGui{
     , iSpacingSize(8)
     , avatarAspect(2.217)
   {
-
     mContainer=container;
 
     setCoord(0, 400, 500, 300);
@@ -60,12 +60,20 @@ namespace MWGui{
 
     coord.top =mAvatarWidget->getCoord().height - 4 - coord.height;
     armor_rating->setCoord(coord);
+/*
+    ESMS::ESMStore& mESMStore=esmstore;
 
-    names[0] = "All";
-    names[1] = "Weapon";
-    names[2] = "Apparel";
-    names[3] = "Magic";
-    names[4] = "Misc";
+    names[0] = mESMStore.gameSettings.list["salltab"].str;
+    names[1] = mESMStore.gameSettings.list["sweapontab"].str;
+    names[2] = mESMStore.gameSettings.list["sappareltab"].str;
+    names[3] = mESMStore.gameSettings.list["smagictab"].str;
+    names[4] = mESMStore.gameSettings.list["smisctab"].str;
+*/
+	names[0]="All";
+	names[1]="Weapon";
+	names[2]="Apparel";
+	names[3]="Magic";
+	names[4]="Misc";
 
     boost::array<CategoryMode, 5> categories = { {
       CM_All, CM_Weapon, CM_Apparel, CM_Magic, CM_Misc
@@ -94,6 +102,8 @@ namespace MWGui{
 
         button_pt->eventMouseButtonClick = MyGUI::newDelegate(this, &InventoryWindow::onCategorySelected);
     }
+
+
   }
 
 
@@ -286,12 +296,33 @@ namespace MWGui{
 
   void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
+    int count=1,oldcount=mItems[_sender].getRefData().getCount();
 
     if(!mDrag){ //drag
-//        if(){ //many items with same name should be stacked and dialog on number to take popups.
-            //set separate mode, nothing can be done while in it (except ESC menu):
+        if(oldcount>1){
+        //set separate mode, nothing can be done while in it (except ESC menu):
+
+        //here number to split should be returned
+        }
+//        if(oldcount>1){ //mdialog on number to take popups.
+//          count=SplittingWindow->confirmation turururm;
 //        }
+        if(oldcount-count>1){
+            _sender->getChildAt(0)->setCaption(MyGUI::utility::toString(oldcount-count));
+        }else if(oldcount-count==1){
+            MyGUI::Gui::getInstance().destroyWidget(_sender->getChildAt(0));
+        }else{
+            mItems.erase(_sender);
+            MyGUI::Gui::getInstance().destroyWidget(_sender);
+        }
+
+        // actually here comes a new pile, in which .getRefData().getCount() should
+        // be ignored, and, if dropped on the ground/placed in another container,
+        // updated with count, or something, not sure yet
+        // and count left in inventory should be updated accordingly (also in case of consumption by avatar)
+        mDragingItem=std::make_pair(mItems[_sender],count);
         mDrag=true;
+
     }else{ //drop the thing to inventory
 
         mDrag=false;
@@ -375,4 +406,3 @@ namespace MWGui{
     }
   }
 } //namespace
-
