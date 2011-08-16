@@ -63,9 +63,7 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
     MWWorld::ContainerStore<MWWorld::RefData> *container;
     container=&MWWorld::Class::get (player).getContainerStore (player);
 
-
-//    ESMS::ESMStore store=environment.mWorld->getStore();
-    inventory = new InventoryWindow (container);//, store);
+    inventory = new InventoryWindow (container, environment.mWorld->getStore().gameSettings);
     inventory->setVisible(false);
     console = new Console(w,h, environment, extensions);
     mMessageBoxManager = new MessageBoxManager(this);

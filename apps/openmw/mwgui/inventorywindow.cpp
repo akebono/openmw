@@ -5,7 +5,7 @@
 #include "../mwworld/refdata.hpp"
 #include "fcntl.h"
 namespace MWGui{
-  InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container)//, ESMS::ESMStore &esmstore)
+  InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container, ESMS::RecIDListT<ESM::GameSetting> settings)//ESMS::ESMStore &esmstore)
     : Layout("openmw_inventory_window_layout.xml")
     , categoryMode(CM_All)
 
@@ -60,21 +60,19 @@ namespace MWGui{
 
     coord.top =mAvatarWidget->getCoord().height - 4 - coord.height;
     armor_rating->setCoord(coord);
-/*
-    ESMS::ESMStore& mESMStore=esmstore;
 
-    names[0] = mESMStore.gameSettings.list["salltab"].str;
-    names[1] = mESMStore.gameSettings.list["sweapontab"].str;
-    names[2] = mESMStore.gameSettings.list["sappareltab"].str;
-    names[3] = mESMStore.gameSettings.list["smagictab"].str;
-    names[4] = mESMStore.gameSettings.list["smisctab"].str;
+    names[0] = settings.list["salltab"].str;
+    names[1] = settings.list["sweapontab"].str;
+    names[2] = settings.list["sappareltab"].str;
+    names[3] = settings.list["smagictab"].str;
+    names[4] = settings.list["smisctab"].str;
+
+/*    names[0]="All";
+    names[1]="Weapon";
+    names[2]="Apparel";
+    names[3]="Magic";
+    names[4]="Misc";
 */
-	names[0]="All";
-	names[1]="Weapon";
-	names[2]="Apparel";
-	names[3]="Magic";
-	names[4]="Misc";
-
     boost::array<CategoryMode, 5> categories = { {
       CM_All, CM_Weapon, CM_Apparel, CM_Magic, CM_Misc
     } };

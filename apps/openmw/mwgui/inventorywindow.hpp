@@ -25,7 +25,7 @@ namespace MWGui
         CM_Misc = 4      // Misc
       };
 
-    InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*);//, ESMS::ESMStore&);
+    InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*,ESMS::RecIDListT<ESM::GameSetting>);
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
