@@ -3,7 +3,7 @@
 #include "../mwworld/class.hpp"
 #include "../mwworld/environment.hpp"
 #include "../mwworld/refdata.hpp"
-#include "fcntl.h"
+
 namespace MWGui{
   InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container, ESMS::RecIDListT<ESM::GameSetting> settings)//ESMS::ESMStore &esmstore)
     : Layout("openmw_inventory_window_layout.xml")
