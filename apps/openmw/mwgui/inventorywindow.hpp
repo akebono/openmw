@@ -1,5 +1,5 @@
-#ifndef MWGUI_INVENTORY_H
-#define MWGUI_INVENTORY_H
+#ifndef MWGUI_INVENTORYWINDOW_H
+#define MWGUI_INVENTORYWINDOW_H
 
 #include <openengine/gui/layout.hpp>
 

@@ -300,11 +300,9 @@ namespace MWGui{
         if(oldcount>1){
         //set separate mode, nothing can be done while in it (except ESC menu):
 
-        //here number to split should be returned
+        //here number to split should be returned to count variable
         }
-//        if(oldcount>1){ //mdialog on number to take popups.
-//          count=SplittingWindow->confirmation turururm;
-//        }
+
         if(oldcount-count>1){
             _sender->getChildAt(0)->setCaption(MyGUI::utility::toString(oldcount-count));
         }else if(oldcount-count==1){
@@ -382,7 +380,7 @@ namespace MWGui{
     if (found!=std::string::npos)
         icon.replace (found,strlen(".tga"),".dds");
     else
-        printf("non .tga icon returned for ptr\n(crash will possibly follow)\n");
+        std::cout<<"non .tga icon returned for ptr\n(crash will possibly follow)\n";
     Item->setImageTexture("icons\\"+icon);
     //FIXME: colour, align, stretching etc
     if(ptr.getRefData().getCount()>1){ //==1){ //for test
