@@ -42,20 +42,21 @@ namespace MWGui
     MyGUI::Colour inactiveColor;
     void refreshView(int);
 
+    bool mDrag;
+    std::pair<MWWorld::Ptr,int> mDragingItem; //item,count pair
+
   private:
     void onScrollChangePosition(MyGUI::VScrollPtr, size_t);
     void onInventoryClick(MyGUI::WidgetPtr);
     void onAvatarClick(MyGUI::WidgetPtr);
     void onResize(MyGUI::Window* _sender);
+
     template <typename T>
-    void drawItemWidget(ESMS::LiveCellRef<T, MWWorld::RefData>*);//MWWorld::Ptr);
+    void drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >);//ESMS::LiveCellRef<T, MWWorld::RefData>*);
 
     MWWorld::ContainerStore<MWWorld::RefData> *mContainer;
 
     std::map<MyGUI::WidgetPtr, MWWorld::Ptr> mItems;
-
-    bool mDrag;
-    std::pair<MWWorld::Ptr,int> mDragingItem; //item,count pair
 
     int x;
     int y;

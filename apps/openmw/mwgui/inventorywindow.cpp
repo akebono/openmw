@@ -157,100 +157,40 @@ namespace MWGui{
         x=4-lastPos;
         y=4;
         if(categoryMode==CM_All){
-            // Weapons
-            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++)
-                drawItemWidget(&*it);
-            // Armor
-            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++)
-                drawItemWidget(&*it);
-            // Potions
-            for(std::list<ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> >::iterator it= mContainer->potions.list.begin();it!= mContainer->potions.list.end();it++)
-                drawItemWidget(&*it);
-            // Ingredients
-            for(std::list<ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> >::iterator it= mContainer->ingreds.list.begin();it!= mContainer->ingreds.list.end();it++)
-                drawItemWidget(&*it);
-            // Books
-            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++)
-                drawItemWidget(&*it);
-            // Apparatus
-            for(std::list<ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> >::iterator it= mContainer->appas.list.begin();it!= mContainer->appas.list.end();it++)
-                drawItemWidget(&*it);
-            // Lockpicks
-            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer->lockpicks.list.begin();it!= mContainer->lockpicks.list.end();it++)
-                drawItemWidget(&*it);
-            // Miscellaneous (keys, gold, soulgems, propylon indexes etc.)
-            for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer->miscItems.list.begin();it!= mContainer->miscItems.list.end();it++)
-                drawItemWidget(&*it);
-            // Probes
-            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer->probes.list.begin();it!= mContainer->probes.list.end();it++)
-                drawItemWidget(&*it);
-            // Repairs
-            for(std::list<ESMS::LiveCellRef<ESM::Repair, MWWorld::RefData> >::iterator it= mContainer->repairs.list.begin();it!= mContainer->repairs.list.end();it++)
-                drawItemWidget(&*it);
+            drawItemWidget(mContainer->weapons.list);
+            drawItemWidget(mContainer->armors.list);
+            drawItemWidget(mContainer->clothes.list);
+            drawItemWidget(mContainer->potions.list);
+            drawItemWidget(mContainer->ingreds.list);
+            drawItemWidget(mContainer->books.list);
+            drawItemWidget(mContainer->appas.list);
+            drawItemWidget(mContainer->lockpicks.list);
+            drawItemWidget(mContainer->miscItems.list);
+            drawItemWidget(mContainer->probes.list);
+            drawItemWidget(mContainer->repairs.list);
         }
         if(categoryMode==CM_Weapon ){
-            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++)
-                drawItemWidget(&*it);
+            drawItemWidget(mContainer->weapons.list);
         }
         if(categoryMode==CM_Magic){
-            // Magic Weapon
-            for(std::list<ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> >::iterator it= mContainer->weapons.list.begin();it!= mContainer->weapons.list.end();it++){
-                if(it->base->enchant == "")
-                    break;
-                drawItemWidget(&*it);
-            }
-            // Magic Armor
-            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++){
-                if(it->base->enchant == "")
-                    break;
-                drawItemWidget(&*it);
-            }
-            // Magic Clothing
-            for(std::list<ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData> >::iterator it= mContainer->clothes.list.begin();it!= mContainer->clothes.list.end();it++){
-                if(it->base->enchant == "")
-                    break;
-                drawItemWidget(&*it);
-            }
-            // Potions
-            for(std::list<ESMS::LiveCellRef<ESM::Potion, MWWorld::RefData> >::iterator it= mContainer->potions.list.begin();it!= mContainer->potions.list.end();it++)
-                drawItemWidget(&*it);
-            // Scrolls
-            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++){
-                if(it->base->enchant == "")
-                    break;
-                drawItemWidget(&*it);
-            }
+            drawItemWidget(mContainer->weapons.list);
+            drawItemWidget(mContainer->armors.list);
+            drawItemWidget(mContainer->clothes.list);
+            drawItemWidget(mContainer->potions.list);
+            drawItemWidget(mContainer->books.list);
         }
         if(categoryMode==CM_Apparel){
-            // Armor
-            for(std::list<ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData> >::iterator it= mContainer->armors.list.begin();it!= mContainer->armors.list.end();it++)
-                drawItemWidget(&*it);
-            // Clothing
-            for(std::list<ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData> >::iterator it= mContainer->clothes.list.begin();it!= mContainer->clothes.list.end();it++)
-                drawItemWidget(&*it);
+            drawItemWidget(mContainer->armors.list);
+            drawItemWidget(mContainer->clothes.list);
         }
         if(categoryMode==CM_Misc){
-            //Ingredients
-            for(std::list<ESMS::LiveCellRef<ESM::Ingredient, MWWorld::RefData> >::iterator it= mContainer->ingreds.list.begin();it!= mContainer->ingreds.list.end();it++)
-                drawItemWidget(&*it);
-            // Books
-            for(std::list<ESMS::LiveCellRef<ESM::Book, MWWorld::RefData> >::iterator it= mContainer->books.list.begin();it!= mContainer->books.list.end();it++)
-                drawItemWidget(&*it);
-            // Apparatus
-            for(std::list<ESMS::LiveCellRef<ESM::Apparatus, MWWorld::RefData> >::iterator it= mContainer->appas.list.begin();it!= mContainer->appas.list.end();it++)
-                drawItemWidget(&*it);
-            // Lockpicks
-            for(std::list<ESMS::LiveCellRef<ESM::Tool, MWWorld::RefData> >::iterator it= mContainer->lockpicks.list.begin();it!= mContainer->lockpicks.list.end();it++)
-                drawItemWidget(&*it);
-            // Miscellaneous
-            for(std::list<ESMS::LiveCellRef<ESM::Miscellaneous, MWWorld::RefData> >::iterator it= mContainer->miscItems.list.begin();it!= mContainer->miscItems.list.end();it++)
-                drawItemWidget(&*it);
-            // Probes
-            for(std::list<ESMS::LiveCellRef<ESM::Probe, MWWorld::RefData> >::iterator it= mContainer->probes.list.begin();it!= mContainer->probes.list.end();it++)
-                drawItemWidget(&*it);
-            // Repairs
-            for(std::list<ESMS::LiveCellRef<ESM::Repair, MWWorld::RefData> >::iterator it= mContainer->repairs.list.begin();it!= mContainer->repairs.list.end();it++)
-                drawItemWidget(&*it);
+            drawItemWidget(mContainer->ingreds.list);
+            drawItemWidget(mContainer->books.list);
+            drawItemWidget(mContainer->appas.list);
+            drawItemWidget(mContainer->lockpicks.list);
+            drawItemWidget(mContainer->miscItems.list);
+            drawItemWidget(mContainer->probes.list);
+            drawItemWidget(mContainer->repairs.list);
         }
       break;
       case 1: // rearange items after resize
@@ -295,14 +235,14 @@ namespace MWGui{
   void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
     int count=1,oldcount=mItems[_sender].getRefData().getCount();
-
+//    printf("%i\n",oldcount);
     if(!mDrag){ //drag
         if(oldcount>1){
         //set separate mode, nothing can be done while in it (except ESC menu):
 
         //here number to split should be returned to count variable
         }
-
+        mDragingItem=std::make_pair(mItems[_sender],count);
         if(oldcount-count>1){
             _sender->getChildAt(0)->setCaption(MyGUI::utility::toString(oldcount-count));
         }else if(oldcount-count==1){
@@ -316,9 +256,8 @@ namespace MWGui{
         // be ignored, and, if dropped on the ground/placed in another container,
         // updated with count, or something, not sure yet
         // and count left in inventory should be updated accordingly (also in case of consumption by avatar)
-        mDragingItem=std::make_pair(mItems[_sender],count);
         mDrag=true;
-
+//        refreshView(0);
     }else{ //drop the thing to inventory
 
         mDrag=false;
@@ -366,38 +305,41 @@ namespace MWGui{
   }
 
   template <typename T>
-  void InventoryWindow::drawItemWidget(ESMS::LiveCellRef<T, MWWorld::RefData>* liveCellRef)
+  void InventoryWindow::drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> > itemlist)
   {
     MyGUI::StaticImagePtr Item;
     MyGUI::StaticTextPtr countWidget;
     std::string icon; // storage for icon name manipualtion
-    MWWorld::Ptr ptr=MWWorld::Ptr(liveCellRef, 0);
+    size_t found;
+    for(typename std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >::iterator it = itemlist.begin(); it != itemlist.end(); it++){
+//        if(it->base->enchant == "")
+//            break;
+        MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
+        Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
+        icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
+        found=icon.rfind(".tga");
+        if (found!=std::string::npos)
+            icon.replace (found,strlen(".tga"),".dds");
+        else
+            std::cout<<"non .tga icon returned for ptr\n(crash will possibly follow)\n";
+        Item->setImageTexture("icons\\"+icon);
+        //FIXME: colour, align, stretching etc
+        if(ptr.getRefData().getCount()>1){ //==1){ //for test
+            countWidget=Item->createWidget<MyGUI::StaticText>("StaticText",25,23,20,20,MyGUI::Align::Default); //test values
+            countWidget->setCaption(MyGUI::utility::toString(ptr.getRefData().getCount()));
+        }
+        Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
+        mItems.insert(std::make_pair(Item, ptr));
+        if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
+            y=4;
+            x+=iIconSize+iSpacingSize;
 
-    Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
-
-    icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
-    size_t found=icon.rfind(".tga");
-    if (found!=std::string::npos)
-        icon.replace (found,strlen(".tga"),".dds");
-    else
-        std::cout<<"non .tga icon returned for ptr\n(crash will possibly follow)\n";
-    Item->setImageTexture("icons\\"+icon);
-    //FIXME: colour, align, stretching etc
-    if(ptr.getRefData().getCount()>1){ //==1){ //for test
-        countWidget=Item->createWidget<MyGUI::StaticText>("StaticText",25,23,20,20,MyGUI::Align::Default); //test values
-        countWidget->setCaption(MyGUI::utility::toString(ptr.getRefData().getCount()));
-    }
-    Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
-    mItems.insert(std::make_pair(Item, ptr));
-    if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
-        y=4;
-        x+=iIconSize+iSpacingSize;
-
-    }else{
-        y+=iIconSize+iSpacingSize;
-        if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
-            scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
-            scroll->setScrollViewPage(scroll->getScrollRange());
+        }else{
+            y+=iIconSize+iSpacingSize;
+            if(x+iIconSize+iSpacingSize>items->getClientCoord().right()){
+                scroll->setScrollRange(x+iIconSize+iSpacingSize+lastPos-items->getClientCoord().right());
+                scroll->setScrollViewPage(scroll->getScrollRange());
+            }
         }
     }
   }
