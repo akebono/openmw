@@ -17,6 +17,7 @@
 #include <components/esm_store/store.hpp>
 #include "../mwmechanics/stat.hpp"
 #include "mode.hpp"
+#include "../mwworld/ptr.hpp"
 
 namespace MyGUI
 {
@@ -78,6 +79,9 @@ namespace MWGui
     typedef std::pair<std::string, int> Faction;
     typedef std::vector<Faction> FactionList;
     typedef std::vector<int> SkillList;
+
+    bool mDrag;
+    std::pair<MWWorld::Ptr,int> mDragingItem; //item,count pair
 
   private:
     MWWorld::Environment& environment;

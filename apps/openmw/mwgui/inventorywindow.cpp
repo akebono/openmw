@@ -5,18 +5,19 @@
 #include "../mwworld/refdata.hpp"
 
 namespace MWGui{
-  InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container, ESMS::RecIDListT<ESM::GameSetting> settings)//ESMS::ESMStore &esmstore)
+  InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container, ESMS::RecIDListT<ESM::GameSetting> settings,bool *Drag, std::pair<MWWorld::Ptr,int> *DragingItem)
     : Layout("openmw_inventory_window_layout.xml")
     , categoryMode(CM_All)
 
     // color should be fetched from skin
     , activeColor(0, 0, 1)
     , inactiveColor(0.7, 0.7, 0.7)
-    , mDrag(false)
     , lastPos(0)
     , iIconSize(40)
     , iSpacingSize(8)
     , avatarAspect(2.217)
+    , mDrag(Drag)
+    , mDragingItem(DragingItem)
   {
     mContainer=container;
 
@@ -61,18 +62,18 @@ namespace MWGui{
     coord.top =mAvatarWidget->getCoord().height - 4 - coord.height;
     armor_rating->setCoord(coord);
 
-    names[0] = settings.list["salltab"].str;
-    names[1] = settings.list["sweapontab"].str;
-    names[2] = settings.list["sappareltab"].str;
-    names[3] = settings.list["smagictab"].str;
-    names[4] = settings.list["smisctab"].str;
-
-/*    names[0]="All";
+    tabtext[0]="salltab";
+    tabtext[1]="sweapontab";
+    tabtext[2]="sappareltab";
+    tabtext[3]="smaigctab";
+    tabtext[4]="smisctab";
+    
+    names[0]="All";
     names[1]="Weapon";
     names[2]="Apparel";
     names[3]="Magic";
     names[4]="Misc";
-*/
+
     boost::array<CategoryMode, 5> categories = { {
       CM_All, CM_Weapon, CM_Apparel, CM_Magic, CM_Misc
     } };
@@ -85,7 +86,7 @@ namespace MWGui{
         CategoryMode mode = categories[i];
         std::string name = names[mode];
         name += "Button";
-        setText(name, names[mode]);
+        setText(name, settings.list[tabtext[mode]].str);
         getWidget(buttons[mode], name);
 
         MyGUI::ButtonPtr &button_pt = buttons[mode];
@@ -236,13 +237,13 @@ namespace MWGui{
   {
     int count=1,oldcount=mItems[_sender].getRefData().getCount();
 //    printf("%i\n",oldcount);
-    if(!mDrag){ //drag
+    if(!*mDrag){ //drag
         if(oldcount>1){
         //set separate mode, nothing can be done while in it (except ESC menu):
 
         //here number to split should be returned to count variable
         }
-        mDragingItem=std::make_pair(mItems[_sender],count);
+        *mDragingItem=std::make_pair(mItems[_sender],count);
         if(oldcount-count>1){
             _sender->getChildAt(0)->setCaption(MyGUI::utility::toString(oldcount-count));
         }else if(oldcount-count==1){
@@ -256,11 +257,11 @@ namespace MWGui{
         // be ignored, and, if dropped on the ground/placed in another container,
         // updated with count, or something, not sure yet
         // and count left in inventory should be updated accordingly (also in case of consumption by avatar)
-        mDrag=true;
+        *mDrag=true;
 //        refreshView(0);
     }else{ //drop the thing to inventory
 
-        mDrag=false;
+       *mDrag=false;
     }
   }
 

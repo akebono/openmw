@@ -25,7 +25,7 @@ namespace MWGui
         CM_Misc = 4      // Misc
       };
 
-    InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*,ESMS::RecIDListT<ESM::GameSetting>);
+    InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*,ESMS::RecIDListT<ESM::GameSetting>,bool*,std::pair<MWWorld::Ptr,int>*);
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
@@ -37,13 +37,11 @@ namespace MWGui
     CategoryMode categoryMode;        // Current category filter
     MyGUI::ButtonPtr buttons[5];    // Button pointers
     std::string names[5];            // Names of category buttons
+    std::string tabtext[5];
 
     MyGUI::Colour activeColor;
     MyGUI::Colour inactiveColor;
     void refreshView(int);
-
-    bool mDrag;
-    std::pair<MWWorld::Ptr,int> mDragingItem; //item,count pair
 
   private:
     void onScrollChangePosition(MyGUI::VScrollPtr, size_t);
@@ -52,7 +50,7 @@ namespace MWGui
     void onResize(MyGUI::Window* _sender);
 
     template <typename T>
-    void drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >);//ESMS::LiveCellRef<T, MWWorld::RefData>*);
+    void drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >);
 
     MWWorld::ContainerStore<MWWorld::RefData> *mContainer;
 
@@ -68,6 +66,10 @@ namespace MWGui
     const int iIconSize;
     const int iSpacingSize;
     float avatarAspect;
+
+    bool *mDrag;
+    std::pair<MWWorld::Ptr,int> *mDragingItem; //item,count pair
+
   };
 }
 #endif
