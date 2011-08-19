@@ -312,8 +312,20 @@ namespace MWGui{
     std::string icon; // storage for icon name manipualtion
     size_t found;
     for(typename std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >::iterator it = itemlist.begin(); it != itemlist.end(); it++){
-//        if(it->base->enchant == "")
-//            break;
+        if(categoryMode==CM_Magic){
+            if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData>*))
+                if(((ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData>*)&*it)->base->enchant == "")
+                    break;
+            if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData>*))
+                if(((ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData>*)&*it)->base->enchant == "")
+                    break;
+            if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData>*))
+                if(((ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData>*)&*it)->base->enchant == "")
+                    break;
+            if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Book, MWWorld::RefData>*))
+                if(((ESMS::LiveCellRef<ESM::Book, MWWorld::RefData>*)&*it)->base->enchant == "")
+                    break;
+        }
         MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
         Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
         icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
@@ -323,8 +335,8 @@ namespace MWGui{
         else
             std::cout<<"non .tga icon returned for ptr\n(crash will possibly follow)\n";
         Item->setImageTexture("icons\\"+icon);
-        //FIXME: colour, align, stretching etc
-        if(ptr.getRefData().getCount()>1){ //==1){ //for test
+        //TODO: colour, align, stretching etc
+        if(ptr.getRefData().getCount()>1){
             countWidget=Item->createWidget<MyGUI::StaticText>("StaticText",25,23,20,20,MyGUI::Align::Default); //test values
             countWidget->setCaption(MyGUI::utility::toString(ptr.getRefData().getCount()));
         }
