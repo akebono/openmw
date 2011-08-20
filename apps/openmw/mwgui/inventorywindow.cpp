@@ -1,7 +1,7 @@
 #include <components/esm_store/store.hpp>
 #include "inventorywindow.hpp"
 #include "../mwworld/class.hpp"
-#include "../mwworld/environment.hpp"
+
 #include "../mwworld/refdata.hpp"
 
 namespace MWGui{
