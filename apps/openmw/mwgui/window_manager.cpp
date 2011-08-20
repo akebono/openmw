@@ -24,7 +24,8 @@ using namespace MWGui;
 
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
-  : environment(environment)
+  : mDrag(false)
+  , environment(environment)
   , nameDialog(nullptr)
   , raceDialog(nullptr)
   , dialogueWindow(nullptr)

@@ -150,7 +150,7 @@ namespace MWGui{
 
     switch(i){
       case 0: //category change/new item. mindless smashing all widgets and recreating needed
-        for(std::map<MyGUI::WidgetPtr, MWWorld::Ptr >::iterator it= mItems.begin();it!= mItems.end();it++)
+        for(std::map<MyGUI::StaticImagePtr, MWWorld::Ptr>::iterator it= mItems.begin();it!= mItems.end();it++)
             MyGUI::Gui::getInstance().destroyWidget(it->first);
 
         mItems.clear();
@@ -198,7 +198,7 @@ namespace MWGui{
 
         x=4-lastPos;
         y=4;
-        for(std::map<MyGUI::WidgetPtr, MWWorld::Ptr >::iterator it=mItems.begin(); it!=mItems.end(); it++){
+        for(std::map<MyGUI::StaticImagePtr, MWWorld::Ptr>::iterator it=mItems.begin(); it!=mItems.end(); it++){
             it->first->setPosition(x,y);
             if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
                 y=4;
@@ -227,7 +227,7 @@ namespace MWGui{
         return;
     lastPos = pos;
 
-    for (std::map<MyGUI::WidgetPtr,MWWorld::Ptr>::const_iterator it = mItems.begin(); it != mItems.end(); ++it)
+    for (std::map<MyGUI::StaticImagePtr,MWWorld::Ptr>::const_iterator it = mItems.begin(); it != mItems.end(); ++it)
     {
         it->first->setCoord(it->first->getCoord() + MyGUI::IntPoint(diff, 0));
     }
@@ -235,9 +235,19 @@ namespace MWGui{
 
   void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
-    int count=1,oldcount=mItems[_sender].getRefData().getCount();
-//    printf("%i\n",oldcount);
-    if(!*mDrag){ //drag
+    typedef std::map<MyGUI::StaticImagePtr, MWWorld::Ptr> Items;
+//    int count=1;
+    //FIXME:mItems[_sender].getRefData().getCount() issue
+    int oldcount=800;
+    Items::iterator it=mItems.find((MyGUI::StaticImagePtr)_sender);
+    if(it!=mItems.end()){
+        oldcount=(&*it)->second.getRefData().getCount();
+        printf("%s getCount()=%i\n",MWWorld::Class::get (mItems[(MyGUI::StaticImagePtr)_sender]).getInventoryIcon (mItems[(MyGUI::StaticImagePtr)_sender]).c_str(),oldcount);
+    }else{
+        printf("404 not found\n");
+    }
+/*    if(!*mDrag){ //drag
+        
         if(oldcount>1){
         //set separate mode, nothing can be done while in it (except ESC menu):
 
@@ -263,6 +273,7 @@ namespace MWGui{
 
        *mDrag=false;
     }
+*/
   }
 
   void InventoryWindow::onAvatarClick(MyGUI::Widget* _sender)
@@ -328,6 +339,7 @@ namespace MWGui{
                     break;
         }
         MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
+        printf("item count:%i\n",ptr.getRefData().getCount());
         Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
         icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
         found=icon.rfind(".tga");

@@ -54,7 +54,7 @@ namespace MWGui
 
     MWWorld::ContainerStore<MWWorld::RefData> *mContainer;
 
-    std::map<MyGUI::WidgetPtr, MWWorld::Ptr> mItems;
+    std::map<MyGUI::StaticImagePtr, MWWorld::Ptr> mItems;
 
     int x;
     int y;
