@@ -65,7 +65,7 @@ namespace MWGui{
     tabtext[0]="salltab";
     tabtext[1]="sweapontab";
     tabtext[2]="sappareltab";
-    tabtext[3]="smaigctab";
+    tabtext[3]="smagictab";
     tabtext[4]="smisctab";
     
     names[0]="All";
