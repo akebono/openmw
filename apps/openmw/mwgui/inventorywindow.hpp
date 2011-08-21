@@ -53,7 +53,7 @@ namespace MWGui
     void drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >*);
 
     MWWorld::ContainerStore<MWWorld::RefData> *mContainer;
-    typedef std::map<MyGUI::StaticImagePtr, MWWorld::Ptr*> mapItems;
+    typedef std::map<MyGUI::StaticImagePtr, MWWorld::Ptr> mapItems;
     mapItems mItems;
 
     int x;

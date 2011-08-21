@@ -158,27 +158,16 @@ namespace MWGui{
         x=4-lastPos;
         y=4;
         if(categoryMode==CM_All){
-            printf("0th call\n");
             drawItemWidget(&mContainer->weapons.list);
-            printf("1st call\n");
             drawItemWidget(&mContainer->armors.list);
-            printf("2nd call\n");
             drawItemWidget(&mContainer->clothes.list);
-            printf("3rd call\n");
             drawItemWidget(&mContainer->potions.list);
-            printf("4th call\n");
             drawItemWidget(&mContainer->ingreds.list);
-            printf("5th call\n");
             drawItemWidget(&mContainer->books.list);
-            printf("6th call\n");
             drawItemWidget(&mContainer->appas.list);
-            printf("7th call\n");
             drawItemWidget(&mContainer->lockpicks.list);
-            printf("8th call\n");
             drawItemWidget(&mContainer->miscItems.list);
-            printf("9th call\n");
             drawItemWidget(&mContainer->probes.list);
-            printf("10th call\n");
             drawItemWidget(&mContainer->repairs.list);
         }
         if(categoryMode==CM_Weapon ){
@@ -246,32 +235,28 @@ namespace MWGui{
 
   void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
-//    int count=1;
-    //FIXME:mItems[_sender].getRefData().getCount() issue
-    int oldcount=800;
+    int count=1;
+    int oldcount;
     mapItems::iterator it=mItems.find((MyGUI::StaticImagePtr)_sender);
     if(it!=mItems.end()){
-        printf("crash follows\n");
-        oldcount=it->second->getRefData().getCount();
-        printf("or not, but count=%i (which is not equal to 1)\n",oldcount);
-//        printf("%08X getCount()=%i\n",/*MWWorld::Class::get (*/*mItems[(MyGUI::StaticImagePtr)_sender]/*).getInventoryIcon (*mItems[(MyGUI::StaticImagePtr)_sender]).c_str()*/, oldcount);
+        oldcount=it->second.getRefData().getCount();
     }else{
-        printf("404 not found\n");
+        printf("onInventoryClick error: not found\n");
     }
-/*    if(!*mDrag){ //drag
+    if(!*mDrag){ //drag
         
         if(oldcount>1){
         //set separate mode, nothing can be done while in it (except ESC menu):
 
         //here number to split should be returned to count variable
         }
-        *mDragingItem=std::make_pair(mItems[_sender],count);
+        *mDragingItem=std::make_pair(mItems[(MyGUI::StaticImagePtr)_sender],count);
         if(oldcount-count>1){
             _sender->getChildAt(0)->setCaption(MyGUI::utility::toString(oldcount-count));
         }else if(oldcount-count==1){
             MyGUI::Gui::getInstance().destroyWidget(_sender->getChildAt(0));
         }else{
-            mItems.erase(_sender);
+            mItems.erase((MyGUI::StaticImagePtr)_sender);
             MyGUI::Gui::getInstance().destroyWidget(_sender);
         }
 
@@ -285,7 +270,6 @@ namespace MWGui{
 
        *mDrag=false;
     }
-*/
   }
 
   void InventoryWindow::onAvatarClick(MyGUI::Widget* _sender)
@@ -356,7 +340,6 @@ namespace MWGui{
 
 
         MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
-
         Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
         icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
         found=icon.rfind(".tga");
@@ -365,7 +348,7 @@ namespace MWGui{
         else
             std::cout<<"non .tga icon returned for ptr\n(crash will possibly follow)\n";
         Item->setImageTexture("icons\\"+icon);
-        //TODO: colour, align, stretching etc
+        //TODO: colour, aligned sizing etc
         if(ptr.getRefData().getCount()>1){
             countWidget=Item->createWidget<MyGUI::StaticText>("StaticText",25,23,20,20,MyGUI::Align::Default); //test values
             countWidget->setCaption(MyGUI::utility::toString(ptr.getRefData().getCount()));
@@ -373,12 +356,7 @@ namespace MWGui{
         Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
         std::pair<mapItems::iterator,bool> ret;
 
-
-        ret=mItems.insert(std::make_pair(Item, &ptr));
-        //FIXME:actually something wrong with map already here?:
-        if(ret.second==false){
-            printf("bug here?\n");
-        }
+        ret=mItems.insert(std::make_pair(Item, ptr));
 
         // proper positioning
         if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
@@ -393,13 +371,5 @@ namespace MWGui{
             }
         }
     }
-
-    for(mapItems::iterator it=mItems.begin();it!=mItems.end();it++){
-        printf("z1 %i\n",it->second->getRefData().getCount());
-        printf("class key is well known it is %s (and exists if you place enumerating of classes in MWWorld::Clas::get(string) routine\n",(*it->second).getTypeName().c_str());
-        printf("z2 %s\n",MWWorld::Class::get (*it->second).getInventoryIcon (*it->second).c_str()); //here comes the crash
-        printf("after crash \n");
-    }
-
   }
 } //namespace
