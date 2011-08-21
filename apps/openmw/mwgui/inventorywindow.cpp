@@ -67,7 +67,7 @@ namespace MWGui{
     tabtext[2]="sappareltab";
     tabtext[3]="smagictab";
     tabtext[4]="smisctab";
-    
+
     names[0]="All";
     names[1]="Weapon";
     names[2]="Apparel";
@@ -81,14 +81,15 @@ namespace MWGui{
     // Initialize buttons with text and adjust sizes, also mark All as active button
     int margin = 2;
     int last_x = 0;
+    MyGUI::WidgetPtr catbar;
     for (unsigned int i = 0; i < categories.size(); ++i)
     {
         CategoryMode mode = categories[i];
         std::string name = names[mode];
         name += "Button";
-        setText(name, settings.list[tabtext[mode]].str);
         getWidget(buttons[mode], name);
-
+        setText(name, settings.list[tabtext[mode]].str);
+        buttons[mode]->setSize(buttons[mode]->getTextSize().width+15,buttons[mode]->getClientCoord().height); //width adjustment for localized strings
         MyGUI::ButtonPtr &button_pt = buttons[mode];
         if (mode == CM_All)
             button_pt->setTextColour(activeColor);
@@ -101,8 +102,8 @@ namespace MWGui{
 
         button_pt->eventMouseButtonClick = MyGUI::newDelegate(this, &InventoryWindow::onCategorySelected);
     }
-
-
+    getWidget(catbar,"Categories");
+    catbar->setSize(1024,catbar->getClientCoord().height); //dirtiest hack :(
   }
 
 
@@ -120,6 +121,7 @@ namespace MWGui{
   {
       return buttons[mode];
   }
+
   void InventoryWindow::onCategorySelected(MyGUI::Widget *widget)
   {
       boost::array<CategoryMode, 5> categories = { {
@@ -137,26 +139,22 @@ namespace MWGui{
       }
   }
 
- //actually should be call in window_manager, which calls InventoryWindow::refreshView(0) while inventory is shown
- //but WindowManager::additem sounds, for me, counterintuitive, so inventory widgets recreating ll occuring while nothing is visible
   void InventoryWindow::addItem(MWWorld::Ptr &ptr)
   {
     refreshView(0);
   }
 
-
   void InventoryWindow::refreshView(int i)
   {
-
     switch(i){
       case 0: //category change/new item. mindless smashing all widgets and recreating needed
         for(mapItems::iterator it= mItems.begin();it!= mItems.end();it++)
             MyGUI::Gui::getInstance().destroyWidget(it->first);
 
         mItems.clear();
-
         x=4-lastPos;
         y=4;
+
         if(categoryMode==CM_All){
             drawItemWidget(&mContainer->weapons.list);
             drawItemWidget(&mContainer->armors.list);
@@ -244,12 +242,15 @@ namespace MWGui{
         printf("onInventoryClick error: not found\n");
     }
     if(!*mDrag){ //drag
-        
         if(oldcount>1){
         //set separate mode, nothing can be done while in it (except ESC menu):
 
         //here number to split should be returned to count variable
         }
+        // actually here comes a new pile, in which .getRefData().getCount() should
+        // be ignored, and, if dropped on the ground/placed in another container,
+        // updated with count, or something, not sure yet
+        // and count left in inventory should be updated accordingly (also in case of consumption by avatar)
         *mDragingItem=std::make_pair(mItems[(MyGUI::StaticImagePtr)_sender],count);
         if(oldcount-count>1){
             _sender->getChildAt(0)->setCaption(MyGUI::utility::toString(oldcount-count));
@@ -260,14 +261,9 @@ namespace MWGui{
             MyGUI::Gui::getInstance().destroyWidget(_sender);
         }
 
-        // actually here comes a new pile, in which .getRefData().getCount() should
-        // be ignored, and, if dropped on the ground/placed in another container,
-        // updated with count, or something, not sure yet
-        // and count left in inventory should be updated accordingly (also in case of consumption by avatar)
         *mDrag=true;
 //        refreshView(0);
     }else{ //drop the thing to inventory
-
        *mDrag=false;
     }
   }
@@ -321,41 +317,43 @@ namespace MWGui{
 
     std::string icon; // storage for icon name manipualtion
     std::string::size_type found;
-    
+
     for(typename std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >::iterator it = itemlist->begin(); it != itemlist->end(); it++){
         if(categoryMode==CM_Magic){
-            if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData>*))
+            if(typeid(T)==typeid(ESM::Weapon))
                 if(((ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData>*)&*it)->base->enchant.empty())
                     break;
-            if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData>*))
+            if(typeid(T)==typeid(ESM::Armor))
                 if(((ESMS::LiveCellRef<ESM::Armor, MWWorld::RefData>*)&*it)->base->enchant.empty())
                     break;
-            if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData>*))
+            if(typeid(T)==typeid(ESM::Clothing))
                 if(((ESMS::LiveCellRef<ESM::Clothing, MWWorld::RefData>*)&*it)->base->enchant.empty())
                     break;
-            if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Book, MWWorld::RefData>*))
+            if(typeid(T)==typeid(ESM::Book))
                 if(((ESMS::LiveCellRef<ESM::Book, MWWorld::RefData>*)&*it)->base->enchant.empty())
                     break;
         }
-
 
         MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
         Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
         icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
         found=icon.rfind(".tga");
+
         if (found!=std::string::npos)
             icon.replace (found,4,".dds");
         else
             std::cout<<"non .tga icon returned for ptr\n(crash will possibly follow)\n";
+
         Item->setImageTexture("icons\\"+icon);
+
         //TODO: colour, aligned sizing etc
         if(ptr.getRefData().getCount()>1){
             countWidget=Item->createWidget<MyGUI::StaticText>("StaticText",25,23,20,20,MyGUI::Align::Default); //test values
             countWidget->setCaption(MyGUI::utility::toString(ptr.getRefData().getCount()));
         }
+
         Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
         std::pair<mapItems::iterator,bool> ret;
-
         ret=mItems.insert(std::make_pair(Item, ptr));
 
         // proper positioning
