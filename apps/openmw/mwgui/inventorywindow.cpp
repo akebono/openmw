@@ -150,7 +150,7 @@ namespace MWGui{
 
     switch(i){
       case 0: //category change/new item. mindless smashing all widgets and recreating needed
-        for(std::map<MyGUI::StaticImagePtr, MWWorld::Ptr*>::iterator it= mItems.begin();it!= mItems.end();it++)
+        for(mapItems::iterator it= mItems.begin();it!= mItems.end();it++)
             MyGUI::Gui::getInstance().destroyWidget(it->first);
 
         mItems.clear();
@@ -159,57 +159,57 @@ namespace MWGui{
         y=4;
         if(categoryMode==CM_All){
             printf("0th call\n");
-            drawItemWidget(mContainer->weapons.list);
+            drawItemWidget(&mContainer->weapons.list);
             printf("1st call\n");
-            drawItemWidget(mContainer->armors.list);
+            drawItemWidget(&mContainer->armors.list);
             printf("2nd call\n");
-            drawItemWidget(mContainer->clothes.list);
+            drawItemWidget(&mContainer->clothes.list);
             printf("3rd call\n");
-            drawItemWidget(mContainer->potions.list);
+            drawItemWidget(&mContainer->potions.list);
             printf("4th call\n");
-            drawItemWidget(mContainer->ingreds.list);
+            drawItemWidget(&mContainer->ingreds.list);
             printf("5th call\n");
-            drawItemWidget(mContainer->books.list);
+            drawItemWidget(&mContainer->books.list);
             printf("6th call\n");
-            drawItemWidget(mContainer->appas.list);
+            drawItemWidget(&mContainer->appas.list);
             printf("7th call\n");
-            drawItemWidget(mContainer->lockpicks.list);
+            drawItemWidget(&mContainer->lockpicks.list);
             printf("8th call\n");
-            drawItemWidget(mContainer->miscItems.list);
+            drawItemWidget(&mContainer->miscItems.list);
             printf("9th call\n");
-            drawItemWidget(mContainer->probes.list);
+            drawItemWidget(&mContainer->probes.list);
             printf("10th call\n");
-            drawItemWidget(mContainer->repairs.list);
+            drawItemWidget(&mContainer->repairs.list);
         }
         if(categoryMode==CM_Weapon ){
-            drawItemWidget(mContainer->weapons.list);
+            drawItemWidget(&mContainer->weapons.list);
         }
         if(categoryMode==CM_Magic){
-            drawItemWidget(mContainer->weapons.list);
-            drawItemWidget(mContainer->armors.list);
-            drawItemWidget(mContainer->clothes.list);
-            drawItemWidget(mContainer->potions.list);
-            drawItemWidget(mContainer->books.list);
+            drawItemWidget(&mContainer->weapons.list);
+            drawItemWidget(&mContainer->armors.list);
+            drawItemWidget(&mContainer->clothes.list);
+            drawItemWidget(&mContainer->potions.list);
+            drawItemWidget(&mContainer->books.list);
         }
         if(categoryMode==CM_Apparel){
-            drawItemWidget(mContainer->armors.list);
-            drawItemWidget(mContainer->clothes.list);
+            drawItemWidget(&mContainer->armors.list);
+            drawItemWidget(&mContainer->clothes.list);
         }
         if(categoryMode==CM_Misc){
-            drawItemWidget(mContainer->ingreds.list);
-            drawItemWidget(mContainer->books.list);
-            drawItemWidget(mContainer->appas.list);
-            drawItemWidget(mContainer->lockpicks.list);
-            drawItemWidget(mContainer->miscItems.list);
-            drawItemWidget(mContainer->probes.list);
-            drawItemWidget(mContainer->repairs.list);
+            drawItemWidget(&mContainer->ingreds.list);
+            drawItemWidget(&mContainer->books.list);
+            drawItemWidget(&mContainer->appas.list);
+            drawItemWidget(&mContainer->lockpicks.list);
+            drawItemWidget(&mContainer->miscItems.list);
+            drawItemWidget(&mContainer->probes.list);
+            drawItemWidget(&mContainer->repairs.list);
         }
       break;
       case 1: // rearange items after resize
 
         x=4-lastPos;
         y=4;
-        for(std::map<MyGUI::StaticImagePtr, MWWorld::Ptr*>::iterator it=mItems.begin(); it!=mItems.end(); it++){
+        for(mapItems::iterator it=mItems.begin(); it!=mItems.end(); it++){
             it->first->setPosition(x,y);
             if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
                 y=4;
@@ -238,7 +238,7 @@ namespace MWGui{
         return;
     lastPos = pos;
 
-    for (std::map<MyGUI::StaticImagePtr,MWWorld::Ptr*>::const_iterator it = mItems.begin(); it != mItems.end(); ++it)
+    for (mapItems::iterator it = mItems.begin(); it != mItems.end(); ++it)
     {
         it->first->setCoord(it->first->getCoord() + MyGUI::IntPoint(diff, 0));
     }
@@ -246,14 +246,15 @@ namespace MWGui{
 
   void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
-    typedef std::map<MyGUI::StaticImagePtr, MWWorld::Ptr*> Items;
 //    int count=1;
     //FIXME:mItems[_sender].getRefData().getCount() issue
     int oldcount=800;
-    Items::iterator it=mItems.find((MyGUI::StaticImagePtr)_sender);
+    mapItems::iterator it=mItems.find((MyGUI::StaticImagePtr)_sender);
     if(it!=mItems.end()){
-        oldcount=(&*it)->second->getRefData().getCount();
-        printf("%s getCount()=%i\n",MWWorld::Class::get (*mItems[(MyGUI::StaticImagePtr)_sender]).getInventoryIcon (*mItems[(MyGUI::StaticImagePtr)_sender]).c_str(),oldcount);
+        printf("crash follows\n");
+        oldcount=it->second->getRefData().getCount();
+        printf("or not, but count=%i (which is not equal to 1)\n",oldcount);
+//        printf("%08X getCount()=%i\n",/*MWWorld::Class::get (*/*mItems[(MyGUI::StaticImagePtr)_sender]/*).getInventoryIcon (*mItems[(MyGUI::StaticImagePtr)_sender]).c_str()*/, oldcount);
     }else{
         printf("404 not found\n");
     }
@@ -328,15 +329,16 @@ namespace MWGui{
   }
 
   template <typename T>
-  void InventoryWindow::drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> > itemlist)
+  void InventoryWindow::drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> > *itemlist)
   {
-    typedef std::list<ESMS::LiveCellRef<T, MWWorld::RefData> > Itemlist;
+
     MyGUI::StaticImagePtr Item;
     MyGUI::StaticTextPtr countWidget;
 
     std::string icon; // storage for icon name manipualtion
     std::string::size_type found;
-    for(typename Itemlist::iterator it = itemlist.begin(); it != itemlist.end(); it++){
+    
+    for(typename std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >::iterator it = itemlist->begin(); it != itemlist->end(); it++){
         if(categoryMode==CM_Magic){
             if(typeid(&*it)==typeid(ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData>*))
                 if(((ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData>*)&*it)->base->enchant.empty())
@@ -351,10 +353,12 @@ namespace MWGui{
                 if(((ESMS::LiveCellRef<ESM::Book, MWWorld::RefData>*)&*it)->base->enchant.empty())
                     break;
         }
-        MWWorld::Ptr *ptr=new MWWorld::Ptr(&*it, 0);
-        printf("item count:%i\n",ptr->getRefData().getCount());
+
+
+        MWWorld::Ptr ptr=MWWorld::Ptr(&*it, 0);
+
         Item=items->createWidget<MyGUI::StaticImage>("StaticImage", x, y, iIconSize, iIconSize, MyGUI::Align::Default );
-        icon=MWWorld::Class::get (*ptr).getInventoryIcon (*ptr);
+        icon=MWWorld::Class::get (ptr).getInventoryIcon (ptr);
         found=icon.rfind(".tga");
         if (found!=std::string::npos)
             icon.replace (found,4,".dds");
@@ -362,17 +366,21 @@ namespace MWGui{
             std::cout<<"non .tga icon returned for ptr\n(crash will possibly follow)\n";
         Item->setImageTexture("icons\\"+icon);
         //TODO: colour, align, stretching etc
-        if(ptr->getRefData().getCount()>1){
+        if(ptr.getRefData().getCount()>1){
             countWidget=Item->createWidget<MyGUI::StaticText>("StaticText",25,23,20,20,MyGUI::Align::Default); //test values
-            countWidget->setCaption(MyGUI::utility::toString(ptr->getRefData().getCount()));
+            countWidget->setCaption(MyGUI::utility::toString(ptr.getRefData().getCount()));
         }
         Item->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
-        std::pair<std::map<MyGUI::StaticImagePtr, MWWorld::Ptr*>::iterator,bool> ret;
+        std::pair<mapItems::iterator,bool> ret;
 
-        ret=mItems.insert(std::make_pair(Item, ptr));
+
+        ret=mItems.insert(std::make_pair(Item, &ptr));
+        //FIXME:actually something wrong with map already here?:
         if(ret.second==false){
             printf("bug here?\n");
         }
+
+        // proper positioning
         if(y+2*iIconSize+iSpacingSize+16 > items->getClientCoord().bottom()){
             y=4;
             x+=iIconSize+iSpacingSize;
@@ -385,9 +393,13 @@ namespace MWGui{
             }
         }
     }
-    //FIXME:actually something wrong with map already here:
-    for(std::map<MyGUI::StaticImagePtr,MWWorld::Ptr*>::iterator it=mItems.begin();it!=mItems.end();it++){
-        printf("%s:%i\n",MWWorld::Class::get (*(&*it)->second).getInventoryIcon (*(&*it)->second).c_str(), (&*it)->second->getRefData().getCount());
+
+    for(mapItems::iterator it=mItems.begin();it!=mItems.end();it++){
+        printf("z1 %i\n",it->second->getRefData().getCount());
+        printf("class key is well known it is %s (and exists if you place enumerating of classes in MWWorld::Clas::get(string) routine\n",(*it->second).getTypeName().c_str());
+        printf("z2 %s\n",MWWorld::Class::get (*it->second).getInventoryIcon (*it->second).c_str()); //here comes the crash
+        printf("after crash \n");
     }
+
   }
 } //namespace

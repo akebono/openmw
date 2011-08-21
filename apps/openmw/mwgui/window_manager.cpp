@@ -317,7 +317,7 @@ void WindowManager::updateVisible()
         // Show the windows we want
         map   -> setVisible( (eff & GW_Map) != 0 );
         stats -> setVisible( (eff & GW_Stats) != 0 );
-        inventory->refreshView(0);
+        inventory -> refreshView(0);
         inventory -> setVisible( eff & GW_Inventory );
 
         return;

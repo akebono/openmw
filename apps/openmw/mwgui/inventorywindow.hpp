@@ -50,11 +50,11 @@ namespace MWGui
     void onResize(MyGUI::Window* _sender);
 
     template <typename T>
-    void drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >);
+    void drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >*);
 
     MWWorld::ContainerStore<MWWorld::RefData> *mContainer;
-
-    std::map<MyGUI::StaticImagePtr, MWWorld::Ptr*> mItems;
+    typedef std::map<MyGUI::StaticImagePtr, MWWorld::Ptr*> mapItems;
+    mapItems mItems;
 
     int x;
     int y;
