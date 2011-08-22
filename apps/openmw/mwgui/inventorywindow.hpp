@@ -8,7 +8,7 @@
 #include "../mwworld/ptr.hpp"
 #include "../mwworld/class.hpp"
 
-/* \brief invetory window in inventory mode
+/* \brief inventory window in inventory, trade and container modes
 */
 
 namespace MWGui
@@ -29,10 +29,7 @@ namespace MWGui
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
-    //TODO: for scripts
     void addItem(MWWorld::Ptr& ptr);
-
-
 
     CategoryMode categoryMode;        // Current category filter
     MyGUI::ButtonPtr buttons[5];    // Button pointers
@@ -53,11 +50,15 @@ namespace MWGui
     void drawItemWidget(std::list<ESMS::LiveCellRef<T, MWWorld::RefData> >*);
 
     MWWorld::ContainerStore<MWWorld::RefData> *mContainer;
+
     typedef std::map<MyGUI::StaticImagePtr, MWWorld::Ptr> mapItems;
+
     mapItems mItems;
 
     int x;
     int y;
+
+    /// scrollbar position
     int lastPos;
 
     MyGUI::WidgetPtr mAvatarWidget;
@@ -67,6 +68,7 @@ namespace MWGui
     const int iSpacingSize;
     float avatarAspect;
 
+    /// these members for moving items between windows (trade, container and this)
     bool *mDrag;
     std::pair<MWWorld::Ptr,int> *mDragingItem; //item,count pair
 

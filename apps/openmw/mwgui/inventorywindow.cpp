@@ -1,10 +1,13 @@
-#include <components/esm_store/store.hpp>
 #include "inventorywindow.hpp"
-#include "../mwworld/class.hpp"
 
+#include <components/esm_store/store.hpp>
+
+#include "../mwworld/class.hpp"
 #include "../mwworld/refdata.hpp"
 
 namespace MWGui{
+  /// constructor with many parameters for transmission of storage for items that will move between trade/container and this window
+  // \todo set width of bar for tabs' buttons with some MyGUI means, not as constant
   InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container, ESMS::RecIDListT<ESM::GameSetting> settings,bool *Drag, std::pair<MWWorld::Ptr,int> *DragingItem)
     : Layout("openmw_inventory_window_layout.xml")
     , categoryMode(CM_All)
@@ -144,6 +147,9 @@ namespace MWGui{
     refreshView(0);
   }
 
+  // called when inventory showed, category switches (i is 0) it causes recreating of all widgets for items in player's inventory
+  // also called upon resizing of inventory window (i = 1) which causes rearraging widgets accordingly
+
   void InventoryWindow::refreshView(int i)
   {
     switch(i){
@@ -234,7 +240,7 @@ namespace MWGui{
   void InventoryWindow::onInventoryClick(MyGUI::WidgetPtr _sender)
   {
     int count=1;
-    int oldcount;
+    int oldcount=1;
     mapItems::iterator it=mItems.find((MyGUI::StaticImagePtr)_sender);
     if(it!=mItems.end()){
         oldcount=it->second.getRefData().getCount();
