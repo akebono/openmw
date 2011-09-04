@@ -7,7 +7,7 @@
 
 #include "../mwworld/ptr.hpp"
 #include "../mwworld/class.hpp"
-
+#include "../mwsound/soundmanager.hpp"
 /* \brief inventory window in inventory, trade and container modes
 */
 
@@ -25,7 +25,7 @@ namespace MWGui
         CM_Misc = 4      // Misc
       };
 
-    InventoryWindow(MWWorld::ContainerStore<MWWorld::RefData>*,ESMS::RecIDListT<ESM::GameSetting>,bool*,std::pair<MWWorld::Ptr,int>*);
+    InventoryWindow(MWWorld::Environment&,bool*,std::pair<MWWorld::Ptr,int>*);
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
@@ -72,6 +72,7 @@ namespace MWGui
     bool *mDrag;
     std::pair<MWWorld::Ptr,int> *mDragingItem; //item,count pair
 
+    MWSound::SoundManager *mSoundManager;
   };
 }
 #endif

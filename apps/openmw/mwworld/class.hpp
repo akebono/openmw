@@ -110,6 +110,10 @@ namespace MWWorld
             ///< Insert into a container or throw an exception, if class does not support inserting into
             /// a container.
 
+            virtual void removeFromContainer (const Ptr& ptr, ContainerStore<RefData>& containerStore)
+                const;
+            ///< Remove item from container or throw an exception, if class does not support removing.
+
             virtual void lock (const Ptr& ptr, int lockLevel) const;
             ///< Lock object (default implementation: throw an exception)
 

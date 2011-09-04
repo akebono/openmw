@@ -79,6 +79,11 @@ namespace MWWorld
         throw std::runtime_error ("class does not support inserting into a container");
     }
 
+    void Class::removeFromContainer (const Ptr& ptr, ContainerStore<RefData>& containerStore) const
+    {
+        throw std::runtime_error ("class does not support removing from a container");
+    }
+
     void Class::lock (const Ptr& ptr, int lockLevel) const
     {
         throw std::runtime_error ("class does not support locking");

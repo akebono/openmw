@@ -37,6 +37,9 @@ namespace ESMS
 
     /// runtime-data
     D mData;
+    inline bool operator== (const LiveCellRef<X,D>& right){
+        return mData==right.mData;
+    }
   };
 
   /// A list of cell references
@@ -74,6 +77,7 @@ namespace ESMS
 
         return 0;
     }
+
   };
 
   /// A storage struct for one single cell reference.

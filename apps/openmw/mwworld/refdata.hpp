@@ -113,6 +113,10 @@ namespace MWWorld
             {
                 return mContainerStore;
             }
+            inline bool operator== (const RefData& right)
+            {
+                return mHandle==right.mHandle;
+            }
     };
 }
 

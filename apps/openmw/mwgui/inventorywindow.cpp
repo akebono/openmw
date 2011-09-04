@@ -4,11 +4,14 @@
 
 #include "../mwworld/class.hpp"
 #include "../mwworld/refdata.hpp"
+#include "../mwworld/environment.hpp"
+#include "../mwworld/world.hpp"
+
 
 namespace MWGui{
   /// constructor with many parameters for transmission of storage for items that will move between trade/container and this window
   // \todo set width of bar for tabs' buttons with some MyGUI means, not as constant
-  InventoryWindow::InventoryWindow (MWWorld::ContainerStore<MWWorld::RefData> *container, ESMS::RecIDListT<ESM::GameSetting> settings,bool *Drag, std::pair<MWWorld::Ptr,int> *DragingItem)
+  InventoryWindow::InventoryWindow (MWWorld::Environment& environment, bool *Drag, std::pair<MWWorld::Ptr,int> *DragingItem)
     : Layout("openmw_inventory_window_layout.xml")
     , categoryMode(CM_All)
 
@@ -22,8 +25,10 @@ namespace MWGui{
     , mDrag(Drag)
     , mDragingItem(DragingItem)
   {
-    mContainer=container;
-
+    MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
+    mContainer=&MWWorld::Class::get (player).getContainerStore (player);
+    mSoundManager=environment.mSoundManager;
+//    PickDropSound pds=PickDropSound(environment);
     setCoord(0, 400, 500, 300);
     // These are just demo values, you should replace these with
     // real calls from outside the class later.
@@ -32,7 +37,6 @@ namespace MWGui{
     MyGUI::Window* window = mMainWidget->castType<MyGUI::Window>(false);
     window->eventWindowChangeCoord=MyGUI::newDelegate(this,&InventoryWindow::onResize);
     window->setMinSize(200,64);
-
     setText("EncumbranceBarT", "176/210");
 
     MyGUI::ProgressPtr pt;
@@ -50,6 +54,7 @@ namespace MWGui{
     scroll->eventScrollChangePosition = MyGUI::newDelegate(this,&InventoryWindow::onScrollChangePosition);
 
     getWidget(items, "Items");
+    items->eventMouseButtonClick=MyGUI::newDelegate(this,&InventoryWindow::onInventoryClick);
 
     getWidget(mAvatarWidget, "Avatar");
 
@@ -91,7 +96,7 @@ namespace MWGui{
         std::string name = names[mode];
         name += "Button";
         getWidget(buttons[mode], name);
-        setText(name, settings.list[tabtext[mode]].str);
+        setText(name, environment.mWorld->getStore().gameSettings.find(tabtext[mode])->str);
         buttons[mode]->setSize(buttons[mode]->getTextSize().width+15,buttons[mode]->getClientCoord().height); //width adjustment for localized strings
         MyGUI::ButtonPtr &button_pt = buttons[mode];
         if (mode == CM_All)
@@ -242,35 +247,48 @@ namespace MWGui{
     int count=1;
     int oldcount=1;
     mapItems::iterator it=mItems.find((MyGUI::StaticImagePtr)_sender);
-    if(it!=mItems.end()){
+    
+    if(it!=mItems.end() ){
         oldcount=it->second.getRefData().getCount();
-    }else{
-        printf("onInventoryClick error: not found\n");
+    }else if(!*mDrag){
+//        printf("onInventoryClick error: not found\n");
+        return;
     }
+
     if(!*mDrag){ //drag
+        mSoundManager->playSound("item weapon blunt up",1.0,1.0);
         if(oldcount>1){
+
         //set separate mode, nothing can be done while in it (except ESC menu):
 
         //here number to split should be returned to count variable
         }
-        // actually here comes a new pile, in which .getRefData().getCount() should
-        // be ignored, and, if dropped on the ground/placed in another container,
-        // updated with count, or something, not sure yet
-        // and count left in inventory should be updated accordingly (also in case of consumption by avatar)
+        // actually here comes a new pile,
+        // and count left in inventory should be updated accordingly (consumption by avatar etc)
         *mDragingItem=std::make_pair(mItems[(MyGUI::StaticImagePtr)_sender],count);
+
         if(oldcount-count>1){
             _sender->getChildAt(0)->setCaption(MyGUI::utility::toString(oldcount-count));
         }else if(oldcount-count==1){
             MyGUI::Gui::getInstance().destroyWidget(_sender->getChildAt(0));
         }else{
             mItems.erase((MyGUI::StaticImagePtr)_sender);
+            MWWorld::Class::get (mDragingItem->first).removeFromContainer (mDragingItem->first, *mContainer);
             MyGUI::Gui::getInstance().destroyWidget(_sender);
         }
-
         *mDrag=true;
+        
 //        refreshView(0);
     }else{ //drop the thing to inventory
-       *mDrag=false;
+//        mDragingItem->second;
+
+        mSoundManager->playSound("item weapon blunt down",1.0,1.0);
+        printf("c0\n");
+    printf("*mDragingItem %s\n",mDragingItem->first.mTypeName.c_str());
+        MWWorld::Class::get (mDragingItem->first).insertIntoContainer (mDragingItem->first, *mContainer);
+        *mDrag=false;
+        printf("c1\n");
+        refreshView(0);
     }
   }
 
@@ -293,7 +311,6 @@ namespace MWGui{
 
             if(true){ //type wearable not misc
                 //TODO:check for already equipped item, redecorate it, and add newly equipped to invetory gui
-                mEquipped[BP_SHIRT]=mDragingItem;
             }
         }
         mDrag=false;

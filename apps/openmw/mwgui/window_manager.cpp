@@ -60,11 +60,11 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
     map = new MapWindow();
     stats = new StatsWindow(*this);
 
-    MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
-    MWWorld::ContainerStore<MWWorld::RefData> *container;
-    container=&MWWorld::Class::get (player).getContainerStore (player);
+//    MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
+//    MWWorld::ContainerStore<MWWorld::RefData> *container;
+//    container=&MWWorld::Class::get (player).getContainerStore (player);
 
-    inventory = new InventoryWindow (container, environment.mWorld->getStore().gameSettings,&mDrag, &mDragingItem);
+    inventory = new InventoryWindow (environment,&mDrag, &mDragingItem);
     inventory->setVisible(false);
     console = new Console(w,h, environment, extensions);
     mMessageBoxManager = new MessageBoxManager(this);

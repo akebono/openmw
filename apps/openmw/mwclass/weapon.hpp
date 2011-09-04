@@ -29,7 +29,11 @@ namespace MWClass
 
             virtual void insertIntoContainer (const MWWorld::Ptr& ptr,
                 MWWorld::ContainerStore<MWWorld::RefData>& containerStore) const;
-            ///< Insert into a containe
+            ///< Insert into a container
+
+            virtual void removeFromContainer (const MWWorld::Ptr& ptr,
+                MWWorld::ContainerStore<MWWorld::RefData>& containerStore) const;
+            ///< Remove from a container
 
             virtual std::string getScript (const MWWorld::Ptr& ptr) const;
             ///< Return name of the script attached to ptr

@@ -379,15 +379,15 @@ void OMW::Engine::go()
     // Create window manager - this manages all the MW-specific GUI windows
     MWScript::registerExtensions (mExtensions);
 
-    mEnvironment.mWindowManager = new MWGui::WindowManager(mGuiManager->getGui(), mEnvironment,
-        mExtensions, mShowFPS, mNewGame);
-
     // Create sound system
     mEnvironment.mSoundManager = new MWSound::SoundManager(mOgre.getRoot(),
                                                            mOgre.getCamera(),
                                                            mEnvironment.mWorld->getStore(),
                                                            (mDataDir),
                                                            mUseSound, mFSStrict);
+
+    mEnvironment.mWindowManager = new MWGui::WindowManager(mGuiManager->getGui(), mEnvironment,
+        mExtensions, mShowFPS, mNewGame);
 
     // Create script system
     mScriptContext = new MWScript::CompilerContext (MWScript::CompilerContext::Type_Full,

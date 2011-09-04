@@ -65,6 +65,12 @@ namespace MWClass
         insertIntoContainerStore (ptr, containerStore.weapons);
     }
 
+    void Weapon::removeFromContainer (const MWWorld::Ptr& ptr,
+        MWWorld::ContainerStore<MWWorld::RefData>& containerStore) const
+    {
+        removeFromContainerStore (ptr, containerStore.weapons);
+    }
+
     std::string Weapon::getScript (const MWWorld::Ptr& ptr) const
     {
         ESMS::LiveCellRef<ESM::Weapon, MWWorld::RefData> *ref =
