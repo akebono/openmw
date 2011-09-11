@@ -15,6 +15,12 @@ namespace MWWorld
     void listItemsInContainer (const std::string& id, ContainerStore<MWWorld::RefData>& containerStore,
         const ESMS::ESMStore& store, std::vector<Ptr>& list);
     ///< append all references with the given id to list.
+    struct itemTransmission{
+        bool drag; //is something dragging
+        Ptr item;
+        int count;
+        ContainerStore<RefData>* container; //from where it is dragged
+    };
 }
 
 #endif

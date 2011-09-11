@@ -11,7 +11,7 @@
 namespace MWGui{
   /// constructor with many parameters for transmission of storage for items that will move between trade/container and this window
   // \todo set width of bar for tabs' buttons with some MyGUI means, not as constant
-  InventoryWindow::InventoryWindow (MWWorld::Environment& environment, bool *Drag, std::pair<MWWorld::Ptr,int> *DragingItem)
+  InventoryWindow::InventoryWindow (MWWorld::Environment& environment, MWWorld::itemTransmission *DragingItem)
     : Layout("openmw_inventory_window_layout.xml")
     , categoryMode(CM_All)
 
@@ -22,7 +22,6 @@ namespace MWGui{
     , iIconSize(40)
     , iSpacingSize(8)
     , avatarAspect(2.217)
-    , mDrag(Drag)
     , mDragingItem(DragingItem)
   {
     MWWorld::Ptr player = environment.mWorld->getPtr ("player", true);
@@ -250,12 +249,12 @@ namespace MWGui{
     
     if(it!=mItems.end() ){
         oldcount=it->second.getRefData().getCount();
-    }else if(!*mDrag){
+    }else if(!mDragingItem->drag){
 //        printf("onInventoryClick error: not found\n");
         return;
     }
 
-    if(!*mDrag){ //drag
+    if(!mDragingItem->drag){ //drag
         mSoundManager->playSound("item weapon blunt up",1.0,1.0);
         if(oldcount>1){
 
@@ -265,29 +264,26 @@ namespace MWGui{
         }
         // actually here comes a new pile,
         // and count left in inventory should be updated accordingly (consumption by avatar etc)
-        *mDragingItem=std::make_pair(mItems[(MyGUI::StaticImagePtr)_sender],count);
+        mDragingItem->item=mItems[(MyGUI::StaticImagePtr)_sender];
+        mDragingItem->count=count;
 
         if(oldcount-count>1){
             _sender->getChildAt(0)->setCaption(MyGUI::utility::toString(oldcount-count));
         }else if(oldcount-count==1){
             MyGUI::Gui::getInstance().destroyWidget(_sender->getChildAt(0));
         }else{
-            mItems.erase((MyGUI::StaticImagePtr)_sender);
-            MWWorld::Class::get (mDragingItem->first).removeFromContainer (mDragingItem->first, *mContainer);
             MyGUI::Gui::getInstance().destroyWidget(_sender);
+            mItems.erase((MyGUI::StaticImagePtr)_sender);
         }
-        *mDrag=true;
+        mDragingItem->drag=true;
         
-//        refreshView(0);
+        refreshView(1);
     }else{ //drop the thing to inventory
-//        mDragingItem->second;
-
+//            MWWorld::Class::get (mDragingItem->item).removeFromContainer (mDragingItem->item, mDragingItem->mContainer);
         mSoundManager->playSound("item weapon blunt down",1.0,1.0);
-        printf("c0\n");
-    printf("*mDragingItem %s\n",mDragingItem->first.mTypeName.c_str());
-        MWWorld::Class::get (mDragingItem->first).insertIntoContainer (mDragingItem->first, *mContainer);
-        *mDrag=false;
-        printf("c1\n");
+//    printf("*mDragingItem %s\n",mDragingItem->first.mTypeName.c_str());
+//        MWWorld::Class::get (mDragingItem->first).insertIntoContainer (mDragingItem->item, mDragingItem->mContainer);
+        mDragingItem->drag=false;
         refreshView(0);
     }
   }

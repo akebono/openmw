@@ -7,6 +7,7 @@
 
 #include "../mwworld/ptr.hpp"
 #include "../mwworld/class.hpp"
+#include "../mwworld/containerutil.hpp"
 #include "../mwsound/soundmanager.hpp"
 /* \brief inventory window in inventory, trade and container modes
 */
@@ -24,8 +25,8 @@ namespace MWGui
         CM_Magic = 3,    // Magic
         CM_Misc = 4      // Misc
       };
+    InventoryWindow(MWWorld::Environment&, MWWorld::itemTransmission*);
 
-    InventoryWindow(MWWorld::Environment&,bool*,std::pair<MWWorld::Ptr,int>*);
     void setCategory(CategoryMode mode);
     MyGUI::ButtonPtr getCategoryButton(CategoryMode mode);
     void onCategorySelected(MyGUI::Widget *widget);
@@ -69,8 +70,7 @@ namespace MWGui
     float avatarAspect;
 
     /// these members for moving items between windows (trade, container and this)
-    bool *mDrag;
-    std::pair<MWWorld::Ptr,int> *mDragingItem; //item,count pair
+    MWWorld::itemTransmission *mDragingItem; //item,count pair
 
     MWSound::SoundManager *mSoundManager;
   };

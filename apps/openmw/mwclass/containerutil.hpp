@@ -19,13 +19,10 @@ namespace MWClass
             ESMS::LiveCellRef<T, MWWorld::RefData> cellRef;
 
             cellRef.base = ptr.get<T>()->base;
-printf("c01\n");
             cellRef.ref = ptr.getCellRef();
-printf("c00\n");
             cellRef.mData = ptr.getRefData();
 
             containerStore.list.push_back (cellRef);
-
 
         }
     }

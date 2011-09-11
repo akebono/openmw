@@ -24,8 +24,7 @@ using namespace MWGui;
 
 WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment,
     const Compiler::Extensions& extensions, bool fpsSwitch, bool newGame)
-  : mDrag(false)
-  , environment(environment)
+  : environment(environment)
   , nameDialog(nullptr)
   , raceDialog(nullptr)
   , dialogueWindow(nullptr)
@@ -64,7 +63,7 @@ WindowManager::WindowManager(MyGUI::Gui *_gui, MWWorld::Environment& environment
 //    MWWorld::ContainerStore<MWWorld::RefData> *container;
 //    container=&MWWorld::Class::get (player).getContainerStore (player);
 
-    inventory = new InventoryWindow (environment,&mDrag, &mDragingItem);
+    inventory = new InventoryWindow (environment, &mDragingItem);
     inventory->setVisible(false);
     console = new Console(w,h, environment, extensions);
     mMessageBoxManager = new MessageBoxManager(this);
